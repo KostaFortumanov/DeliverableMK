@@ -1,0 +1,89 @@
+<form [formGroup]="addJobForm" (ngSubmit)="addJob()">
+    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+        <mat-form-field appearance="fill">
+            <mat-label>Град</mat-label>
+            <input type="text" matInput formControlName="cityGroup" [matAutocomplete]="autoGroup">
+            <mat-autocomplete #autoGroup="matAutocomplete">
+                <mat-optgroup *ngFor="let group of cityGroupOptions | async" [label]="group.letter">
+                    <mat-option *ngFor="let name of group.names" [value]="name">
+                        {{name}}
+                    </mat-option>
+                </mat-optgroup>
+            </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Улица</mat-label>
+            <input type="text" matInput formControlName="streetGroup" [matAutocomplete]="autoGroup1">
+            <mat-autocomplete #autoGroup1="matAutocomplete">
+                <mat-optgroup *ngFor="let group of streetGroupOptions | async" [label]="group.letter">
+                    <mat-option *ngFor="let name of group.names" [value]="name">
+                        {{name}}
+                    </mat-option>
+                </mat-optgroup>
+            </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Број</mat-label>
+            <input type="text" matInput formControlName="numberGroup" [matAutocomplete]="autoGroup3">
+            <mat-autocomplete #autoGroup3="matAutocomplete">
+                <mat-optgroup *ngFor="let group of numberGroupOptions | async">
+                    <mat-option *ngFor="let number of group.numbers" [value]="number">
+                        {{number}}
+                    </mat-option>
+                </mat-optgroup>
+            </mat-autocomplete>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field appearance="fill">
+            <mat-label>Опис на пратка</mat-label>
+            <textarea matInput formControlName="description" rows="5"></textarea>
+        </mat-form-field>
+    </div>
+    <span class="button-container">
+        <div class="spinner-container" *ngIf="addJobLoading">
+            <mat-spinner diameter="24"></mat-spinner>
+        </div>
+
+        <button [disabled]="addJobLoading" mat-raised-button color="primary">
+            Add job
+        </button>
+        <mat-error style="display: inline;" *ngIf="addJobError"> {{addJobError}}</mat-error>
+
+    </span>
+</form>
+<br />
+<mat-divider></mat-divider>
+<br />
+<div class="map-container">
+    <div class="map-frame">
+        <div id="addJobMap"></div>
+    </div>
+    <br />
+    <form [formGroup]="addLocationForm" (ngSubmit)="addLocation()">
+        <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+            <mat-form-field appearance="fill">
+                <mat-label>Град</mat-label>
+                <input matInput formControlName="city">
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Улица</mat-label>
+                <input matInput formControlName="street">
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Број</mat-label>
+                <input matInput formControlName="number">
+            </mat-form-field>
+            <span class="button-container bottom-button">
+                <div class="spinner-container" *ngIf="addLocationLoading">
+                    <mat-spinner diameter="24"></mat-spinner>
+                </div>
+
+                <button [disabled]="addLocationLoading" mat-raised-button color="primary">
+                    Add location
+                </button>
+                <mat-error style="display: inline;" *ngIf="addLocationError"> {{addLocationError}}</mat-error>
+            </span>
+        </div>
+    </form>
+</div>
