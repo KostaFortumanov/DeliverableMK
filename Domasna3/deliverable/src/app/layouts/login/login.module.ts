@@ -11,9 +11,13 @@ import { MatInputModule } from '@angular/material/input';
 
 import { LoginFormComponent } from 'src/app/modules/login-form/login-form.component';
 import { LoginComponent } from './login.component';
+import { RegisterFormComponent } from 'src/app/modules/register-form/register-form.component';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { NewAccountComponent } from 'src/app/modules/new-account/new-account.component';
 
 @NgModule({
-  declarations: [LoginComponent, LoginFormComponent],
+  declarations: [LoginComponent, LoginFormComponent, RegisterFormComponent, NewAccountComponent],
   imports: [
     CommonModule,
     RouterModule,
@@ -24,6 +28,8 @@ import { LoginComponent } from './login.component';
     ReactiveFormsModule,
     MatProgressSpinnerModule,
     MatInputModule,
+    MatOptionModule,
+    MatSelectModule
   ],
 })
 export class LoginModule {}

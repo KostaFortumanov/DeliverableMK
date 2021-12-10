@@ -7,14 +7,16 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnInit {
-  username!: string;
+  firstName!: string;
+  lastName!: string;
   email!: string;
   role!: string;
 
   constructor(private tokenStorageService: TokenStorageService) {
     let user = tokenStorageService.getUser();
     if (user) {
-      this.username = user.username;
+      this.firstName = user.firstName;
+      this.lastName = user.lastName;
       this.email = user.email;
       this.role = 'ROLE_MANAGER';
     }

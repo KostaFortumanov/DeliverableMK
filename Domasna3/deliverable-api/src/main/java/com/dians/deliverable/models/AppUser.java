@@ -1,5 +1,6 @@
 package com.dians.deliverable.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,6 +40,7 @@ public class AppUser implements UserDetails {
     private String firstName;
     private String lastName;
     private String email;
+    private String phoneNumber;
     private String password;
     @Enumerated(EnumType.STRING)
     private UserRole userRole;

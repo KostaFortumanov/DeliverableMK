@@ -54,11 +54,11 @@ export class LoginFormComponent implements OnInit {
           this.router.navigate(['/']);
         },
         (error) => {
-          if (error.error.error) {
-            this.error = error.error.error;
-          } else {
-            this.error = 'Server unavailable';
-          }
+          console.log(error)
+          if(error.status == '0')
+            this.error = "Server unavailable"
+          else 
+            this.error = "Incorrect username or password"
           this.loading = false;
         }
       );

@@ -1,0 +1,34 @@
+<mat-card>
+    <mat-card-title>Activate account</mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="newAccountForm" (ngSubmit)="onSubmit()">
+        <div>
+          <mat-form-field appearance="fill">
+            <mat-label>Enter new password</mat-label>
+            <input matInput type="password" formControlName="password" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+            <mat-error *ngIf="submitted && f.password.errors">Password is required</mat-error>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field appearance="fill">
+            <mat-label>Confirm password</mat-label>
+            <input matInput type="password" formControlName="repeatPassword"
+              [ngClass]="{ 'is-invalid': submitted && f.repeatPassword.errors }" />
+            <mat-error *ngIf="submitted && f.repeatPassword.errors">Password is required</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="button-container">
+          <div class="spinner-container" *ngIf="loading">
+            <mat-spinner diameter="24"></mat-spinner>
+          </div>
+  
+          <button [disabled]="loading" mat-raised-button color="primary">
+            Submit
+          </button>
+  
+          <mat-error *ngIf="error">{{error}}</mat-error>
+          <p style="color: green;" *ngIf="success">{{success}}</p>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>

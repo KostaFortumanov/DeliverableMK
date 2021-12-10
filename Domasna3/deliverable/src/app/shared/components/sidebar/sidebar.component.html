@@ -1,7 +1,7 @@
 <mat-nav-list>
     <div class="profile-card">
         <div class="header">
-            <h2>{{ username }}</h2>
+            <h2>{{ firstName }} {{ lastName }}</h2>
             <h4>{{ email }}</h4>
         </div>
     </div>
@@ -15,7 +15,7 @@
     <a mat-list-item routerLinkActive="list-item-active" routerLink="/addJob">Add job</a>
     <a mat-list-item routerLinkActive="list-item-active" routerLink="/allDrivers">All drivers</a>
     <a mat-list-item routerLinkActive="list-item-active" routerLink="/selectDrivers">Select drivers</a>
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/newDriver">Add new driver</a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/register">Add new employee</a>
 
     <!-- <a mat-list-item routerLinkActive="list-item-active" routerLink="/" *(ngIf)="user.role=='ROLE_USER'">Dashboard</a>
     <a mat-list-item routerLinkActive="list-item-active" routerLink="/map" *(ngIf)="user.role=='ROLE_USER'">Map</a>

@@ -18,14 +18,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -78,6 +76,7 @@ public class AuthController {
         user.setEmail(registerRequest.getEmail());
         user.setFirstName(registerRequest.getFirstName());
         user.setLastName(registerRequest.getLastName());
+        user.setPhoneNumber(registerRequest.getPhoneNumber());
         if(registerRequest.getUserRole().equalsIgnoreCase("driver")) {
             user.setUserRole(UserRole.DRIVER);
         } else if(registerRequest.getUserRole().equalsIgnoreCase("manager")) {

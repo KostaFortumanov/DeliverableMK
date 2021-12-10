@@ -11,12 +11,14 @@ import { DriverMapComponent } from './modules/driver-map/driver-map.component';
 import { LoginFormComponent } from './modules/login-form/login-form.component';
 import { SelectDriversComponent } from './modules/select-drivers/select-drivers.component';
 import { AuthGuard } from './helpers';
+import { RegisterFormComponent } from './modules/register-form/register-form.component';
+import { NewAccountComponent } from './modules/new-account/new-account.component';
 
 const routes: Routes = [
   {
     path: '',
     component: DefaultComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
@@ -41,12 +43,21 @@ const routes: Routes = [
     ],
   },
   {
-    path: 'login',
+    path: '',
     component: LoginComponent,
     children: [
       {
-        path: '',
+        path: 'login',
         component: LoginFormComponent,
+      },
+      {
+        path: 'register',
+        component: RegisterFormComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'newAccount',
+        component: NewAccountComponent,
       },
     ],
   },

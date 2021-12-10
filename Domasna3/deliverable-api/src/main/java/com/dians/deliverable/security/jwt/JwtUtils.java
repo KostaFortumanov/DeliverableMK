@@ -39,7 +39,7 @@ public class JwtUtils {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
         } catch (Exception e) {
-            return false;
         }
+            return false;
     }
 }

@@ -41,7 +41,6 @@ import { DriverMapComponent } from 'src/app/modules/driver-map/driver-map.compon
     MatSidenavModule,
     MatDividerModule,
     FlexLayoutModule,
-    MatCardModule,
     MatTableModule,
     MatPaginatorModule,
     FormsModule,
@@ -53,6 +52,7 @@ import { DriverMapComponent } from 'src/app/modules/driver-map/driver-map.compon
     MatProgressSpinnerModule,
     ReactiveFormsModule,
     DragDropModule,
+    MatCardModule
   ],
   providers: [DashboardService],
 })
