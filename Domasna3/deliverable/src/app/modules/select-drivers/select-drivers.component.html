@@ -1,0 +1,20 @@
+<div class="drag-drop-container">
+    <h2>Drivers</h2>
+
+    <div cdkDropList #driverList="cdkDropList" [cdkDropListData]="drivers" [cdkDropListConnectedTo]="[selectedList]"
+        class="drag-drop-list" (cdkDropListDropped)="drop($event)">
+        <div class="drag-drop-box" *ngFor="let item of drivers" cdkDrag>{{item}}</div>
+    </div>
+</div>
+<div class="drag-drop-container">
+    <h2>Selected</h2>
+
+    <div cdkDropList #selectedList="cdkDropList" [cdkDropListData]="selected" [cdkDropListConnectedTo]="[driverList]"
+        class="drag-drop-list" (cdkDropListDropped)="drop($event)">
+        <div class="drag-drop-box" *ngFor="let item of selected" cdkDrag>{{item}}</div>
+    </div>
+</div>
+
+<div class="drag-drop-container">
+    <button mat-raised-button color="primary" (click)="submit()">Submit</button>
+</div>
