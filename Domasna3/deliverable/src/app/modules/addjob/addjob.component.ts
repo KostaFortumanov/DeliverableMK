@@ -1,23 +1,14 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import {
+  startWith,
+  map,
+  debounceTime,
+  distinctUntilChanged,
+} from 'rxjs/operators';
 import * as L from 'leaflet';
 import { AddressService } from 'src/app/services/address.service';
-
-export interface CityGroup {
-  letter: string;
-  names: string[];
-}
-
-export interface StreetGroup {
-  letter: string;
-  names: string[];
-}
-
-export interface NumberGroup {
-  numbers: string[];
-}
 
 export const _filter = (opt: string[], value: string): string[] => {
   const filterValue = value.toLowerCase();
@@ -25,25 +16,32 @@ export const _filter = (opt: string[], value: string): string[] => {
   return opt.filter((item) => item.toLowerCase().includes(filterValue));
 };
 
+export interface Address {
+  id: number,
+  number: number,
+  lat: number,
+  lon: number
+}
+
 @Component({
   selector: 'app-addjob',
   templateUrl: './addjob.component.html',
   styleUrls: ['./addjob.component.scss'],
 })
-export class AddjobComponent implements AfterViewInit {
+export class AddjobComponent implements OnInit {
   map!: L.Map;
   addJobLoading = false;
   addLocationLoading = false;
   addJobError = '';
   addLocationError = '';
 
-  cityGroups: CityGroup[];
-  streetGroups: StreetGroup[];
-  numberGroups: NumberGroup[];
+  cities: string[] = [];
+  streets: string[] = [];
+  numbers: string[] = [];
 
-  cityGroupOptions!: Observable<CityGroup[]>;
-  streetGroupOptions!: Observable<StreetGroup[]>;
-  numberGroupOptions!: Observable<NumberGroup[]>;
+  cityOptions!: Observable<string[]>;
+  streetOptions!: Observable<string[]>;
+  numberOptions!: Observable<string[]>;
 
   private initMap(): void {
     this.map = L.map('addJobMap', {
@@ -63,103 +61,165 @@ export class AddjobComponent implements AfterViewInit {
   );
 
   addJobForm: FormGroup = this._formBuilder.group({
-    cityGroup: '',
-    streetGroup: '',
-    numberGroup: '',
+    city: '',
+    street: '',
+    number: '',
     description: 'Име примач:\nОпис:\n',
   });
 
   addLocationForm: FormGroup = this._formBuilder.group({
-    city: '',
-    street: '',
-    number: '',
+    addCity: '',
+    addStreet: '',
+    addNumber: '',
   });
 
   constructor(
     private _formBuilder: FormBuilder,
     private addressService: AddressService
   ) {
-    this.cityGroups = addressService.getCities();
-    this.streetGroups = addressService.getStreets();
-    this.numberGroups = addressService.getNumbers();
+    this.getCities();
   }
+
+  getCities() {
+    this.addressService.getCities().subscribe(
+      (data) => {
+        console.log(data);
+        this.cities = data;
+      },
+      (error) => {
+        console.log(error);
+        this.streets = [];
+        this.numbers = [];
+      }
+    );
+  }
+
+  getStreets(cityName: string) {
+    this.addressService.getStreets(cityName).subscribe(
+      (data) => {
+        console.log(data);
+        this.streets = data;
+        this.addJobError = '';
+      },
+      (error) => {
+        console.log(error);
+        this.streets = [];
+        this.numbers = [];
+        this.addJobError = error.error.message;
+      }
+    );
+  }
+
+  getNumbers(cityName: string, streetName: string) {
+    this.addressService.getNumbers(cityName, streetName).subscribe(
+      (data) => {
+        console.log(data);
+        this.numbers = data;
+        this.addJobError = '';
+      },
+      (error) => {
+        console.log(error);
+        this.numbers = [];
+        this.addJobError = error.error.message;
+      }
+    )
+  } 
 
   addJob(): void {
     console.log(
-      this.addJobControls().cityGroup.value +
+      this.addJobForm.get('city')!.value +
         ' ' +
-        this.addJobControls().streetGroup.value +
+        this.addJobForm.get('street')!.value +
         ' ' +
-        this.addJobControls().numberGroup.value +
+        this.addJobForm.get('number')!.value +
         ' ' +
-        this.addJobControls().description.value
+        this.addJobForm.get('description')!.value
     );
   }
 
   addLocation(): void {
     console.log(
-      this.addLocationControls().city.value +
+      this.addJobControls().cityGroup.value +
         ' ' +
-        this.addLocationControls().street.value +
+        this.addJobControls().streetGroup.value +
         ' ' +
-        this.addLocationControls().number.value
+        this.addJobControls().numberGroup.value
     );
   }
 
-  ngAfterViewInit() {
-    this.streetGroupOptions = this.addJobForm
-      .get('streetGroup')!
-      .valueChanges.pipe(
-        startWith(''),
-        map((value) => this._filterStreetGroup(value))
-      );
-    this.cityGroupOptions = this.addJobForm.get('cityGroup')!.valueChanges.pipe(
+  ngOnInit() {
+    this.initCityOptions();
+
+    this.addJobForm.get('city')?.valueChanges.subscribe((x) => {
+      this.getStreets(x);
+      this.getNumbers(x, this.addJobForm.get('street')?.value);
+      this.initStreetOptions();
+      this.initNumberOptions();
+    });
+
+    this.addJobForm.get('street')?.valueChanges.subscribe((x) => {
+      this.getNumbers(this.addJobForm.get('city')?.value, x);
+      this.initNumberOptions();
+    });
+
+    this.initMap();
+    this.tiles.addTo(this.map)
+  }
+
+  initCityOptions() {
+    this.cityOptions = this.addJobForm.get('city')!.valueChanges.pipe(
       startWith(''),
+      debounceTime(400),
+      distinctUntilChanged(),
       map((value) => this._filterCityGroup(value))
     );
-    this.numberGroupOptions = this.addJobForm
-      .get('numberGroup')!
-      .valueChanges.pipe(
-        startWith(''),
-        map((value) => this._filterNumberGroup(value))
-      );
-    this.initMap();
-    this.tiles.addTo(this.map);
   }
 
-  private _filterCityGroup(value: string): CityGroup[] {
-    if (value) {
-      return this.cityGroups
-        .map((group) => ({
-          letter: group.letter,
-          names: _filter(group.names, value),
-        }))
-        .filter((group) => group.names.length > 0);
-    }
-
-    return this.cityGroups;
+  initStreetOptions() {
+    this.streetOptions = this.addJobForm
+        .get('street')!
+        .valueChanges.pipe(
+          startWith(''),
+          debounceTime(400),
+          distinctUntilChanged(),
+          map((value) => this._filterStreetGroup(value))
+        );
   }
 
-  private _filterStreetGroup(value: string): StreetGroup[] {
-    if (value) {
-      return this.streetGroups
-        .map((group) => ({
-          letter: group.letter,
-          names: _filter(group.names, value),
-        }))
-        .filter((group) => group.names.length > 0);
-    }
-    return this.streetGroups;
+  initNumberOptions() {
+    this.numberOptions = this.addJobForm
+        .get('number')!
+        .valueChanges.pipe(
+          startWith(''),
+          debounceTime(400),
+          distinctUntilChanged(),
+          map((value) => this._filterNumberGroup(value))
+        );
   }
 
-  private _filterNumberGroup(value: string): NumberGroup[] {
-    if (value) {
-      return this.numberGroups.map((group) => ({
-        numbers: _filter(group.numbers, value),
-      }));
-    }
+  private _filterCityGroup(value: string): string[] {
+    const filterValue = this._normalizeValue(value);
+    return this.cities.filter((city) =>
+      this._normalizeValue(city).includes(filterValue)
+    );
+  }
 
-    return this.numberGroups;
+  private _normalizeValue(value: string): string {
+    return value.toLowerCase().replace(/\s/g, '');
+  }
+
+  private _filterStreetGroup(value: string): string[] {
+    const filterValue = this._normalizeValue(value);
+    return this.streets.filter((street) =>
+      this._normalizeValue(street).includes(filterValue)
+    );
+  }
+
+  private _filterNumberGroup(value: string): string[] {
+    const filterValue = this._normalizeValue(value);
+    return this.numbers.filter((number) =>
+      this._normalizeValue(number).includes(filterValue)
+    );
   }
 
   private addJobControls() {

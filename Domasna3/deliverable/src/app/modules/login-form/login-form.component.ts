@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 
@@ -47,6 +48,11 @@ export class LoginFormComponent implements OnInit {
     this.loading = true;
     this.authenticationService
       .login(this.f.username.value, this.f.password.value)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
       .subscribe(
         (data) => {
           this.tokenStorage.saveToken(data.token);
@@ -59,7 +65,6 @@ export class LoginFormComponent implements OnInit {
             this.error = "Server unavailable"
           else 
             this.error = "Incorrect username or password"
-          this.loading = false;
         }
       );
   }

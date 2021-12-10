@@ -1,58 +1,25 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+
+const API = environment.apiUrl;
 
 @Injectable({
   providedIn: 'root',
 })
 export class AddressService {
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
-  getCities() {
-    return [
-      {
-        letter: 'S',
-        names: ['Skopje'],
-      },
-    ];
+  getCities(): Observable<any> {
+    return this.http.get(API + '/locations');
   }
 
-  getStreets() {
-    return [
-      {
-        letter: 'A',
-        names: ['Arhitekt Nikola Dobrovikj'],
-      },
-      {
-        letter: 'B',
-        names: ['Bahar Mois', 'Brsjacka Buna'],
-      },
-      {
-        letter: 'J',
-        names: ['Jane Sandanski'],
-      },
-      {
-        letter: 'K',
-        names: ['Kumanovska'],
-      },
-      {
-        letter: 'N',
-        names: ['Naum Naumovski Borce', 'Nikola Kirov - Majski'],
-      },
-      {
-        letter: 'O',
-        names: ['Oktomvriska'],
-      },
-      {
-        letter: 'P',
-        names: ['Petar Pop Arsov', 'Petar Cajkovski'],
-      },
-    ];
+  getStreets(cityName: string): Observable<any> {
+    return this.http.get(API + '/locations/' + cityName);
   }
 
-  getNumbers() {
-    return [
-      {
-        numbers: ['11', '12', '23', '54'],
-      },
-    ];
+  getNumbers(cityName: string, streetName: string): Observable<any> {
+    return this.http.get(API + '/locations/' + cityName + "/" + streetName);
   }
 }

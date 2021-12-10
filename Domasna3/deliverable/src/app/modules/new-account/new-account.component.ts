@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
@@ -51,16 +52,19 @@ export class NewAccountComponent implements OnInit {
     this.loading = true;
     this.authcenticationService
       .newAccount(this.token, this.f.password.value, this.f.repeatPassword.value)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
       .subscribe(
         (data) => {
           console.log(data)
           this.success = data.message;
-          this.loading = false;
         },
         (error) => {
           console.log(error)
           this.error = error.error.message;
-          this.loading = false;
         }
       );
 

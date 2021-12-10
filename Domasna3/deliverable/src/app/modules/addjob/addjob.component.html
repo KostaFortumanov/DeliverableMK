@@ -2,35 +2,29 @@
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center" fxLayoutGap="20px">
         <mat-form-field appearance="fill">
             <mat-label>Град</mat-label>
-            <input type="text" matInput formControlName="cityGroup" [matAutocomplete]="autoGroup">
+            <input type="text" matInput formControlName="city" [matAutocomplete]="autoGroup">
             <mat-autocomplete #autoGroup="matAutocomplete">
-                <mat-optgroup *ngFor="let group of cityGroupOptions | async" [label]="group.letter">
-                    <mat-option *ngFor="let name of group.names" [value]="name">
+                    <mat-option *ngFor="let name of cityOptions | async" [value]="name">
                         {{name}}
                     </mat-option>
-                </mat-optgroup>
             </mat-autocomplete>
         </mat-form-field>
         <mat-form-field appearance="fill">
             <mat-label>Улица</mat-label>
-            <input type="text" matInput formControlName="streetGroup" [matAutocomplete]="autoGroup1">
+            <input type="text" matInput formControlName="street" [matAutocomplete]="autoGroup1">
             <mat-autocomplete #autoGroup1="matAutocomplete">
-                <mat-optgroup *ngFor="let group of streetGroupOptions | async" [label]="group.letter">
-                    <mat-option *ngFor="let name of group.names" [value]="name">
-                        {{name}}
-                    </mat-option>
-                </mat-optgroup>
+                <mat-option *ngFor="let name of streetOptions | async" [value]="name">
+                    {{name}}
+                </mat-option>
             </mat-autocomplete>
         </mat-form-field>
         <mat-form-field appearance="fill">
             <mat-label>Број</mat-label>
-            <input type="text" matInput formControlName="numberGroup" [matAutocomplete]="autoGroup3">
+            <input type="text" matInput formControlName="number" [matAutocomplete]="autoGroup3">
             <mat-autocomplete #autoGroup3="matAutocomplete">
-                <mat-optgroup *ngFor="let group of numberGroupOptions | async">
-                    <mat-option *ngFor="let number of group.numbers" [value]="number">
-                        {{number}}
-                    </mat-option>
-                </mat-optgroup>
+                <mat-option *ngFor="let number of numberOptions | async" [value]="number">
+                    {{number}}
+                </mat-option>
             </mat-autocomplete>
         </mat-form-field>
     </div>
@@ -64,15 +58,15 @@
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center" fxLayoutGap="20px">
             <mat-form-field appearance="fill">
                 <mat-label>Град</mat-label>
-                <input matInput formControlName="city">
+                <input matInput formControlName="addCity">
             </mat-form-field>
             <mat-form-field appearance="fill">
                 <mat-label>Улица</mat-label>
-                <input matInput formControlName="street">
+                <input matInput formControlName="addStreet">
             </mat-form-field>
             <mat-form-field appearance="fill">
                 <mat-label>Број</mat-label>
-                <input matInput formControlName="number">
+                <input matInput formControlName="addNumber">
             </mat-form-field>
             <span class="button-container bottom-button">
                 <div class="spinner-container" *ngIf="addLocationLoading">

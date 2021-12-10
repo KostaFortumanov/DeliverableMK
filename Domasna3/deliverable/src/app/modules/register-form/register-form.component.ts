@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
@@ -47,16 +48,19 @@ export class RegisterFormComponent implements OnInit {
     this.loading = true;
     this.authcenticationService
       .register(this.f.firstName.value, this.f.lastName.value, this.f.email.value, this.f.phoneNumber.value, this.f.role.value)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
       .subscribe(
         (data) => {
           console.log(data)
           this.success = data.message;
-          this.loading = false;
         },
         (error) => {
           console.log(error)
           this.error = error.error.message;
-          this.loading = false;
         }
       );
   }
