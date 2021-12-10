@@ -1,5 +1,6 @@
 package com.dians.deliverable.service;
 
+import com.dians.deliverable.models.AppUser;
 import com.dians.deliverable.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,5 +19,13 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return repository.findByEmail(username).orElse(null);
+    }
+
+    public boolean existsByEmail(String email) {
+        return repository.existsByEmail(email);
+    }
+
+    public void save(AppUser user) {
+        repository.save(user);
     }
 }
