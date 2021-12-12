@@ -4,7 +4,7 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div>
         <mat-form-field appearance="fill">
-          <mat-label>Enter your username</mat-label>
+          <mat-label>Enter your email</mat-label>
           <input matInput formControlName="username" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
           <mat-error *ngIf="submitted && f.username.errors">Username is required</mat-error>
         </mat-form-field>

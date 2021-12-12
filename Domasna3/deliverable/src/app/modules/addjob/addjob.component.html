@@ -54,6 +54,8 @@
         <div id="addJobMap"></div>
     </div>
     <br />
+    <p style="color: green;" *ngIf="addLocationSuccess">{{addLocationSuccess}}</p>
+    <mat-error style="display: inline;" *ngIf="addLocationError"> {{addLocationError}}</mat-error>
     <form [formGroup]="addLocationForm" (ngSubmit)="addLocation()">
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center" fxLayoutGap="20px">
             <mat-form-field appearance="fill">
@@ -72,12 +74,12 @@
                 <div class="spinner-container" *ngIf="addLocationLoading">
                     <mat-spinner diameter="24"></mat-spinner>
                 </div>
-
-                <button [disabled]="addLocationLoading" mat-raised-button color="primary">
-                    Add location
-                </button>
-                <mat-error style="display: inline;" *ngIf="addLocationError"> {{addLocationError}}</mat-error>
-            </span>
-        </div>
+                
+            <button [disabled]="addLocationLoading" mat-raised-button color="primary">
+                Add location
+            </button>
+        </span>
+        
+    </div>
     </form>
 </div>

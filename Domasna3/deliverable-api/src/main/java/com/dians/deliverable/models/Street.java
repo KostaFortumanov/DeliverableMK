@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,5 +26,10 @@ public class Street {
     private List<Address> addresses;
 
     public Street() {
+    }
+
+    public Street(String name) {
+        this.name = name;
+        addresses = new ArrayList<>();
     }
 }

@@ -26,4 +26,10 @@ public class Address {
 
     public Address() {
     }
+
+    public Address(int number, Double lat, Double lon) {
+        this.number = number;
+        this.lat = lat;
+        this.lon = lon;
+    }
 }

@@ -1,5 +1,6 @@
 package com.dians.deliverable.service;
 
+import com.dians.deliverable.models.Address;
 import com.dians.deliverable.repository.AddressRepository;
 import org.springframework.stereotype.Service;
 
@@ -10,5 +11,9 @@ public class AddressService {
 
     public AddressService(AddressRepository repository) {
         this.repository = repository;
+    }
+
+    public void save(Address newAddress) {
+        repository.save(newAddress);
     }
 }

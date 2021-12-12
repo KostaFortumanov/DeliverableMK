@@ -25,6 +25,9 @@
           <button [disabled]="loading" mat-raised-button color="primary">
             Submit
           </button>
+          <a mat-raised-button color="primary" *ngIf="success" routerLink="/login" style="margin-left: 10px;">
+            Go to login page
+          </a>
   
           <mat-error *ngIf="error">{{error}}</mat-error>
           <p style="color: green;" *ngIf="success">{{success}}</p>

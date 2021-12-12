@@ -23,4 +23,8 @@ public class CityService {
     public City findByName(String cityName) {
         return repository.findByName(cityName).orElse(null);
     }
+
+    public void save(City newCity) {
+        repository.save(newCity);
+    }
 }

@@ -6,6 +6,7 @@ import {
   map,
   debounceTime,
   distinctUntilChanged,
+  finalize,
 } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { AddressService } from 'src/app/services/address.service';
@@ -16,13 +17,6 @@ export const _filter = (opt: string[], value: string): string[] => {
   return opt.filter((item) => item.toLowerCase().includes(filterValue));
 };
 
-export interface Address {
-  id: number,
-  number: number,
-  lat: number,
-  lon: number
-}
-
 @Component({
   selector: 'app-addjob',
   templateUrl: './addjob.component.html',
@@ -30,10 +24,13 @@ export interface Address {
 })
 export class AddjobComponent implements OnInit {
   map!: L.Map;
+  marker =  L.marker(L.GeoJSON.coordsToLatLng([0, 0]));
+
   addJobLoading = false;
   addLocationLoading = false;
   addJobError = '';
   addLocationError = '';
+  addLocationSuccess = '';
 
   cities: string[] = [];
   streets: string[] = [];
@@ -47,6 +44,15 @@ export class AddjobComponent implements OnInit {
     this.map = L.map('addJobMap', {
       center: [41.9961, 21.4316],
       zoom: 13,
+    });
+    this.marker.addTo(this.map);
+
+    this.map.on('click', <LeafletMouseEvent>(e: { latlng: any; }) => { 
+      this.marker.removeFrom(this.map);
+      this.marker = L.marker(e.latlng);
+      this.marker.addTo(this.map);
+      this.addLocationLat = e.latlng.lat;
+      this.addLocationLon = e.latlng.lng;
     });
   }
 
@@ -72,6 +78,9 @@ export class AddjobComponent implements OnInit {
     addStreet: '',
     addNumber: '',
   });
+
+  addLocationLat: number = 0;
+  addLocationLon: number = 0;
 
   constructor(
     private _formBuilder: FormBuilder,
@@ -138,13 +147,31 @@ export class AddjobComponent implements OnInit {
   }
 
   addLocation(): void {
-    console.log(
-      this.addJobControls().cityGroup.value +
-        ' ' +
-        this.addJobControls().streetGroup.value +
-        ' ' +
-        this.addJobControls().numberGroup.value
-    );
+    let city = this.addLocationForm.get('addCity')!.value;
+    let street = this.addLocationForm.get('addStreet')!.value;
+    let number = this.addLocationForm.get('addNumber')!.value;
+    
+    this.addLocationSuccess = '';
+    this.addLocationError = '';
+    this.addLocationLoading = true;
+    this.addressService
+      .addLocation(city, street, number, this.addLocationLat, this.addLocationLon)
+      .pipe(
+        finalize(() => {
+          this.addLocationLoading = false;
+        })
+      )
+      .subscribe(
+        (data) => {
+          this.addLocationSuccess = data.message;
+          this.getCities();
+          this.initCityOptions();
+          this.marker.removeFrom(this.map);
+        },
+        (error) => {
+          this.addLocationError = error.error.message;
+        }
+      )
   }
 
   ngOnInit() {
@@ -220,13 +247,5 @@ export class AddjobComponent implements OnInit {
     return this.numbers.filter((number) =>
       this._normalizeValue(number).includes(filterValue)
     );
-  }
-
-  private addJobControls() {
-    return this.addJobForm.controls;
-  }
-
-  private addLocationControls() {
-    return this.addLocationForm.controls;
   }
 }
