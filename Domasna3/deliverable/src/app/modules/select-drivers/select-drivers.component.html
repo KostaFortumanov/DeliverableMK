@@ -1,20 +1,39 @@
-<div class="drag-drop-container">
-    <h2>Drivers</h2>
-
-    <div cdkDropList #driverList="cdkDropList" [cdkDropListData]="drivers" [cdkDropListConnectedTo]="[selectedList]"
-        class="drag-drop-list" (cdkDropListDropped)="drop($event)">
-        <div class="drag-drop-box" *ngFor="let item of drivers" cdkDrag>{{item}}</div>
-    </div>
+<div class="spinner-container" *ngIf="pageLoading">
+    <mat-spinner></mat-spinner>
 </div>
-<div class="drag-drop-container">
-    <h2>Selected</h2>
+<div *ngIf="show">
+    <mat-error style="display: inline;" *ngIf="error"> {{error}}</mat-error>
 
-    <div cdkDropList #selectedList="cdkDropList" [cdkDropListData]="selected" [cdkDropListConnectedTo]="[driverList]"
-        class="drag-drop-list" (cdkDropListDropped)="drop($event)">
-        <div class="drag-drop-box" *ngFor="let item of selected" cdkDrag>{{item}}</div>
+    <div *ngIf="!error">
+        <div class="drag-drop-container">
+            <h2>Drivers</h2>
+
+            <div cdkDropList #driverList="cdkDropList" [cdkDropListData]="drivers"
+                [cdkDropListConnectedTo]="[selectedList]" class="drag-drop-list" (cdkDropListDropped)="drop($event)">
+                <div class="drag-drop-box" *ngFor="let item of drivers" cdkDrag>{{item.fullName}}</div>
+            </div>
+        </div>
+        <div class="drag-drop-container">
+            <h2>Selected</h2>
+
+            <div cdkDropList #selectedList="cdkDropList" [cdkDropListData]="selected"
+                [cdkDropListConnectedTo]="[driverList]" class="drag-drop-list" (cdkDropListDropped)="drop($event)">
+                <div class="drag-drop-box" *ngFor="let item of selected" cdkDrag>{{item.fullName}}</div>
+            </div>
+        </div>
+
+        <div class="drag-drop-container">
+            <span class="button-container">
+                <div class="spinner-container" *ngIf="loading">
+                    <mat-spinner diameter="24"></mat-spinner>
+                </div>
+        
+                <button [disabled]="loading" mat-raised-button color="primary" (click)="assignJobs()">
+                    Assign jobs
+                </button>
+                <mat-error style="display: inline;" *ngIf="assignJobError"> {{assignJobError}}</mat-error>
+                <p style="color: green; display: inline;" *ngIf="assignJobSuccess">{{assignJobSuccess}}</p>
+            </span>
+        </div>
     </div>
-</div>
-
-<div class="drag-drop-container">
-    <button mat-raised-button color="primary" (click)="submit()">Submit</button>
 </div>

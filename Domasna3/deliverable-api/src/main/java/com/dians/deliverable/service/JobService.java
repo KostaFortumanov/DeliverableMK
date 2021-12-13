@@ -5,6 +5,8 @@ import com.dians.deliverable.models.JobStatus;
 import com.dians.deliverable.repository.JobRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class JobService {
 
@@ -20,5 +22,13 @@ public class JobService {
 
     public boolean exists(String address, String description) {
         return repository.existsByAddressAndDescriptionAndStatus(address, description, JobStatus.NOT_ASSIGNED);
+    }
+
+    public List<Job> getAllByStatus(JobStatus status) {
+        return repository.findAllByStatus(status);
+    }
+
+    public Job getById(Long jobId) {
+        return repository.getById(jobId);
     }
 }

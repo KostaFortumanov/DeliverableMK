@@ -24,6 +24,7 @@ import { AddjobComponent } from 'src/app/modules/addjob/addjob.component';
 import { AllDriversComponent } from 'src/app/modules/all-drivers/all-drivers.component';
 import { SelectDriversComponent } from 'src/app/modules/select-drivers/select-drivers.component';
 import { DriverMapComponent } from 'src/app/modules/driver-map/driver-map.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -51,8 +52,9 @@ import { DriverMapComponent } from 'src/app/modules/driver-map/driver-map.compon
     MatInputModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
+    MatCardModule,
     DragDropModule,
-    MatCardModule
+    MatIconModule
   ],
   providers: [DashboardService],
 })

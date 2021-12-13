@@ -28,4 +28,8 @@ export class JobService {
       httpOptions
     )
   }
+
+  assignJobs(driverIds: number[]): Observable<any> {
+    return this.http.post(API + '/jobs/assignJobs', driverIds)
+  }
 }

@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Getter
 @Setter
@@ -45,6 +46,9 @@ public class AppUser implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
     private Boolean enabled;
+
+    @OneToMany
+    private List<Job> currentJobs;
 
     public AppUser() {
     }

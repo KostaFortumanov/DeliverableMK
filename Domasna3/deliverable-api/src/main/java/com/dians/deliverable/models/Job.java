@@ -42,7 +42,7 @@ public class Job {
     @Enumerated(EnumType.STRING)
     private JobStatus status;
     @OneToOne
-    private AppUser completedBy;
+    private AppUser assignedTo;
 
     public Job() {
     }
