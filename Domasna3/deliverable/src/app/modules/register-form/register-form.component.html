@@ -50,12 +50,14 @@
                 <button [disabled]="loading" mat-raised-button color="primary">
                     Register
                 </button>
+            </div>
+            <div class="button-container">
                 <a mat-raised-button color="primary" routerLink="/" style="margin-left: 10px;">
                     Back
                 </a>
-                <mat-error *ngIf="error">{{error}}</mat-error>
-                <p style="color: green;" *ngIf="success">{{success}}</p>
             </div>
+            <mat-error *ngIf="error">{{error}}</mat-error>
+            <p style="color: green;" *ngIf="success">{{success}}</p>
         </form>
     </mat-card-content>
 </mat-card>

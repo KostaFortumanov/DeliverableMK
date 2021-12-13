@@ -12,6 +12,7 @@ import com.dians.deliverable.security.jwt.JwtUtils;
 import com.dians.deliverable.service.EmailService;
 import com.dians.deliverable.service.NewAccountTokenService;
 import com.dians.deliverable.service.UserService;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -70,6 +71,12 @@ public class AuthController {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use"));
+        }
+
+        if(!EmailValidator.getInstance().isValid(registerRequest.getEmail())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Invalid email"));
         }
 
         AppUser user = new AppUser();

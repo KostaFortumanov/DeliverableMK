@@ -10,6 +10,7 @@ import {
 } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { AddressService } from 'src/app/services/address.service';
+import { JobService } from 'src/app/services/job.service';
 
 export const _filter = (opt: string[], value: string): string[] => {
   const filterValue = value.toLowerCase();
@@ -29,6 +30,7 @@ export class AddjobComponent implements OnInit {
   addJobLoading = false;
   addLocationLoading = false;
   addJobError = '';
+  addJobSuccess = '';
   addLocationError = '';
   addLocationSuccess = '';
 
@@ -84,7 +86,8 @@ export class AddjobComponent implements OnInit {
 
   constructor(
     private _formBuilder: FormBuilder,
-    private addressService: AddressService
+    private addressService: AddressService,
+    private jobService: JobService
   ) {
     this.getCities();
   }
@@ -135,15 +138,32 @@ export class AddjobComponent implements OnInit {
   } 
 
   addJob(): void {
-    console.log(
-      this.addJobForm.get('city')!.value +
-        ' ' +
-        this.addJobForm.get('street')!.value +
-        ' ' +
-        this.addJobForm.get('number')!.value +
-        ' ' +
-        this.addJobForm.get('description')!.value
-    );
+    let city = this.addJobForm.get('city')!.value;
+    let street = this.addJobForm.get('street')!.value;
+    let number = this.addJobForm.get('number')!.value;
+    let description = this.addJobForm.get('description')!.value;
+
+    this.addJobError = '';
+    this.addJobSuccess = '';
+    this.addJobLoading = true;
+    this.jobService
+      .addJob(city, street, number, description)
+      .pipe(
+        finalize(() => {
+          this.addJobLoading = false;
+        })
+      )
+      .subscribe(
+        (data) => {
+          this.addJobSuccess = data.message;
+        },
+        (error) => {
+          if(error.status == '0')
+            this.addJobError = "Server unavailable"
+          else
+            this.addJobError = error.error.message;
+        }
+      );
   }
 
   addLocation(): void {
@@ -167,9 +187,14 @@ export class AddjobComponent implements OnInit {
           this.getCities();
           this.initCityOptions();
           this.marker.removeFrom(this.map);
+          this.addLocationLat = 0;
+          this.addLocationLon = 0;
         },
         (error) => {
-          this.addLocationError = error.error.message;
+          if(error.status == '0')
+            this.addLocationError = "Server unavailable";
+          else
+            this.addLocationError = error.error.message;
         }
       )
   }
