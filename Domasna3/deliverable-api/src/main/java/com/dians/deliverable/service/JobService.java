@@ -1,5 +1,6 @@
 package com.dians.deliverable.service;
 
+import com.dians.deliverable.models.AppUser;
 import com.dians.deliverable.models.Job;
 import com.dians.deliverable.models.JobStatus;
 import com.dians.deliverable.repository.JobRepository;
@@ -30,5 +31,9 @@ public class JobService {
 
     public Job getById(Long jobId) {
         return repository.getById(jobId);
+    }
+
+    public List<Job> getByDriver(AppUser user) {
+        return repository.findAllByAssignedTo(user);
     }
 }

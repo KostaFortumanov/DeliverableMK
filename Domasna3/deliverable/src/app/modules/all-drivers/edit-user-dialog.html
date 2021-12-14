@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Edit {{ data.fullName }}</h1>
+<div mat-dialog-content>
+    <form [formGroup]="editUserForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="fill" style="display: block;">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email">
+        </mat-form-field>
+        <mat-form-field appearance="fill" style="display: block;">
+            <mat-label>Phone number</mat-label>
+            <input matInput formControlName="phone">
+        </mat-form-field>
+        <button style="display: inline;" mat-raised-button type="submit" color="primary">Ok</button>
+        <button mat-button (click)="onNoClick()" type="reset">No Thanks</button>
+    </form>
+</div>
+<div mat-dialog-actions>
+</div>

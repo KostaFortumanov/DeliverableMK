@@ -1,5 +1,6 @@
 package com.dians.deliverable.repository;
 
+import com.dians.deliverable.models.AppUser;
 import com.dians.deliverable.models.Job;
 import com.dians.deliverable.models.JobStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,4 +12,5 @@ import java.util.List;
 public interface JobRepository extends JpaRepository<Job, Long> {
     boolean existsByAddressAndDescriptionAndStatus(String address, String description, JobStatus jobStatus);
     List<Job> findAllByStatus(JobStatus status);
+    List<Job> findAllByAssignedTo(AppUser user);
 }

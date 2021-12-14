@@ -21,10 +21,11 @@ import { DefaultComponent } from './default.component';
 import { DashboardComponent } from 'src/app/modules/dashboard/dashboard.component';
 import { DashboardService } from 'src/app/services/dashboard.service';
 import { AddjobComponent } from 'src/app/modules/addjob/addjob.component';
-import { AllDriversComponent } from 'src/app/modules/all-drivers/all-drivers.component';
+import { AllDriversComponent, EditUserDialog } from 'src/app/modules/all-drivers/all-drivers.component';
 import { SelectDriversComponent } from 'src/app/modules/select-drivers/select-drivers.component';
 import { DriverMapComponent } from 'src/app/modules/driver-map/driver-map.component';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog'
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { MatIconModule } from '@angular/material/icon';
     AddjobComponent,
     AllDriversComponent,
     SelectDriversComponent,
+    EditUserDialog
   ],
   imports: [
     CommonModule,
@@ -54,7 +56,8 @@ import { MatIconModule } from '@angular/material/icon';
     ReactiveFormsModule,
     MatCardModule,
     DragDropModule,
-    MatIconModule
+    MatIconModule,
+    MatDialogModule
   ],
   providers: [DashboardService],
 })

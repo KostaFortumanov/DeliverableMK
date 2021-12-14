@@ -42,4 +42,8 @@ public class UserService implements UserDetailsService {
     public AppUser getById(Long driverId) {
         return repository.getById(driverId);
     }
+
+    public void deleteUser(AppUser user) {
+        repository.delete(user);
+    }
 }
