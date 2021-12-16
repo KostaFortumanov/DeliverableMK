@@ -3,6 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { finalize } from 'rxjs/operators';
 import { AllDriverDetailsService } from 'src/app/services/all-driver-details.service';
 
 export interface Driver {
@@ -19,6 +20,11 @@ export interface Driver {
   styleUrls: ['./all-drivers.component.scss'],
 })
 export class AllDriversComponent implements OnInit {
+
+  show = false;
+  pageLoading = true;
+  error = '';
+
   displayedColumns: string[] = [
     'position',
     'name',
@@ -79,10 +85,20 @@ export class AllDriversComponent implements OnInit {
   }
 
   getDrivers() {
-    this.allDriverDetailsService.getDrivers().subscribe(
+    this.allDriverDetailsService.getDrivers()
+    .pipe(
+      finalize(() => {
+        this.pageLoading = false;
+        this.show = true;
+      })
+    )
+      .subscribe(
       (data) => {
         this.dataSource = new MatTableDataSource<Driver>(data);
-      }
+      },
+      (error) => {
+        this.error = 'Server unavailable';
+      } 
     )
   }
 }

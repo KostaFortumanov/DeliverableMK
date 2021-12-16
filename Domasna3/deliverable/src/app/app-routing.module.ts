@@ -13,6 +13,7 @@ import { SelectDriversComponent } from './modules/select-drivers/select-drivers.
 import { AuthGuard } from './helpers';
 import { RegisterFormComponent } from './modules/register-form/register-form.component';
 import { NewAccountComponent } from './modules/new-account/new-account.component';
+import { ManagerJobsComponent } from './modules/manager-jobs/manager-jobs.component';
 
 const routes: Routes = [
   {
@@ -40,6 +41,10 @@ const routes: Routes = [
         path: 'selectDrivers',
         component: SelectDriversComponent,
       },
+      {
+        path: 'jobs',
+        component: ManagerJobsComponent
+      }
     ],
   },
   {

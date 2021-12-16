@@ -2,6 +2,7 @@ package com.dians.deliverable.controller;
 
 import com.dians.deliverable.models.*;
 import com.dians.deliverable.payload.request.AddJobRequest;
+import com.dians.deliverable.payload.response.JobResponse;
 import com.dians.deliverable.payload.vroom.VroomRequest;
 import com.dians.deliverable.payload.response.MessageResponse;
 import com.dians.deliverable.service.CityService;
@@ -45,6 +46,41 @@ public class JobController {
         this.cityService = cityService;
         this.jobService = jobService;
         this.userService = userService;
+    }
+
+    @GetMapping("/unassignedJobs")
+    public ResponseEntity<?> getUnassignedJobs() {
+        List<Job> jobs = jobService.getAllByStatus(JobStatus.NOT_ASSIGNED);
+        List<JobResponse> response = new ArrayList<>();
+
+        jobs.forEach(job -> response.add(new JobResponse(job.getId(), job.getAddress(), job.getDescription())));
+
+        return ResponseEntity
+                .ok(response);
+    }
+
+    @GetMapping("/assignedJobs")
+    public ResponseEntity<?> getAssignedJobs() {
+        List<Job> jobs = jobService.getAllByStatus(JobStatus.ASSIGNED);
+        List<JobResponse> response = new ArrayList<>();
+
+        jobs.forEach(job -> response.add(new JobResponse(job.getId(), job.getAddress(), job.getDescription(),
+                job.getAssignedTo() == null ? "user" : job.getAssignedTo().getFirstName() + " " + job.getAssignedTo().getLastName())));
+
+        return ResponseEntity
+                .ok(response);
+    }
+
+    @GetMapping("/completedJobs")
+    public ResponseEntity<?> getCompletedJobs() {
+        List<Job> jobs = jobService.getAllByStatus(JobStatus.COMPLETED);
+        List<JobResponse> response = new ArrayList<>();
+
+        jobs.forEach(job -> response.add(new JobResponse(job.getId(), job.getAddress(), job.getDescription(),
+                job.getAssignedTo() == null ? "user" : job.getAssignedTo().getFirstName() + " " + job.getAssignedTo().getLastName())));
+
+        return ResponseEntity
+                .ok(response);
     }
 
     @PostMapping("/addJob")
@@ -192,6 +228,14 @@ public class JobController {
                     .badRequest()
                     .body(new MessageResponse("Error"));
         }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteJob(@PathVariable Long id) {
+        jobService.delete(id);
+
+        return ResponseEntity
+                .ok("");
     }
 
     private String capitalize(String str) {

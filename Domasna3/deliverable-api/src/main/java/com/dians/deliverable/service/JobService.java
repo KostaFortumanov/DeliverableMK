@@ -36,4 +36,8 @@ public class JobService {
     public List<Job> getByDriver(AppUser user) {
         return repository.findAllByAssignedTo(user);
     }
+
+    public void delete(Long id) {
+        repository.deleteById(id);
+    }
 }

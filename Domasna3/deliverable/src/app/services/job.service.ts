@@ -32,4 +32,20 @@ export class JobService {
   assignJobs(driverIds: number[]): Observable<any> {
     return this.http.post(API + '/jobs/assignJobs', driverIds)
   }
+
+  getUnassigned(): Observable<any> {
+    return this.http.get(API + '/jobs/unassignedJobs');
+  }
+
+  getAssigned(): Observable<any> {
+    return this.http.get(API + '/jobs/assignedJobs');
+  }
+
+  getCompleted(): Observable<any> {
+    return this.http.get(API + '/jobs/completedJobs');
+  }
+
+  deleteJob(id: number): Observable<any> {
+    return this.http.delete(API + '/jobs/delete/' + id)
+  }
 }

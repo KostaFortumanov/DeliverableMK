@@ -26,6 +26,9 @@ import { SelectDriversComponent } from 'src/app/modules/select-drivers/select-dr
 import { DriverMapComponent } from 'src/app/modules/driver-map/driver-map.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog'
+import { ManagerJobsComponent } from 'src/app/modules/manager-jobs/manager-jobs.component';
+import { MatTabsModule } from '@angular/material/tabs'
+import { MatExpansionModule } from '@angular/material/expansion'
 
 @NgModule({
   declarations: [
@@ -35,7 +38,8 @@ import { MatDialogModule } from '@angular/material/dialog'
     AddjobComponent,
     AllDriversComponent,
     SelectDriversComponent,
-    EditUserDialog
+    EditUserDialog,
+    ManagerJobsComponent
   ],
   imports: [
     CommonModule,
@@ -57,7 +61,9 @@ import { MatDialogModule } from '@angular/material/dialog'
     MatCardModule,
     DragDropModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTabsModule,
+    MatExpansionModule
   ],
   providers: [DashboardService],
 })
