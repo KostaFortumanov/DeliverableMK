@@ -2,15 +2,16 @@
     <mat-spinner></mat-spinner>
 </div>
 <div *ngIf="show">
-    <mat-error style="display: inline;" *ngIf="error"> {{error}}</mat-error>
+    <mat-error style="display: inline;" *ngIf="pageLoadError"> {{pageLoadError}}</mat-error>
 
-    <div *ngIf="!error">
+    <div *ngIf="!pageLoadError">
         <div class="drag-drop-container">
             <h2>Drivers</h2>
 
             <div cdkDropList #driverList="cdkDropList" [cdkDropListData]="drivers"
                 [cdkDropListConnectedTo]="[selectedList]" class="drag-drop-list" (cdkDropListDropped)="drop($event)">
-                <div class="drag-drop-box" *ngFor="let item of drivers" cdkDrag>{{item.fullName}}</div>
+                <div class="drag-drop-box" *ngFor="let item of drivers" cdkDrag [cdkDragDisabled]="!item.available">
+                    {{item.fullName}}</div>
             </div>
         </div>
         <div class="drag-drop-container">
@@ -22,18 +23,74 @@
             </div>
         </div>
 
-        <div class="drag-drop-container">
-            <span class="button-container">
-                <div class="spinner-container" *ngIf="loading">
-                    <mat-spinner diameter="24"></mat-spinner>
-                </div>
-        
-                <button [disabled]="loading" mat-raised-button color="primary" (click)="assignJobs()">
-                    Assign jobs
-                </button>
-                <mat-error style="display: inline;" *ngIf="assignJobError"> {{assignJobError}}</mat-error>
-                <p style="color: green; display: inline;" *ngIf="assignJobSuccess">{{assignJobSuccess}}</p>
-            </span>
+        <div>
+            <mat-error style="display: inline;" *ngIf="error"> {{error}}</mat-error>
+            <p style="color: green; display: inline;" *ngIf="success">{{success}}</p>
+            <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+                <mat-card fxFlex="100">
+                    <mat-card-subtitle>Assignment details</mat-card-subtitle>
+                    <mat-card-content>
+                        <div *ngIf="noSelection">
+                            No selection
+                        </div>
+                        <div *ngIf="!noSelection">
+                            <div fxLayout="row" fxLayout.xs="column">
+                                <p fxFlex="15"><b>Assigned jobs: </b> {{ timePreview.assignedJobs }}</p>
+                                <p fxFlex="15"><b>Fuel cost ~ </b> {{ timePreview.fuelCost }}</p>
+                                <p fxFlex="15"><b>Time ~ </b> {{ timePreview.time }}</p>
+                            </div>
+
+                            <h3>Detailed</h3>
+                            <div>
+                                <mat-accordion>
+                                    <mat-expansion-panel hideToggle *ngFor="let driver of detailDrivers">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{ driver.firstName }} {{driver.lastName}}
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                Jobs: {{ driver.jobs.length }}
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        <mat-accordion>
+                                            <mat-expansion-panel hideToggle *ngFor="let job of driver.jobs">
+                                                <mat-expansion-panel-header>
+                                                    <mat-panel-title>
+                                                        {{ job.id }}
+                                                    </mat-panel-title>
+                                                    <mat-panel-description>
+                                                        {{ job.address }}
+                                                    </mat-panel-description>
+                                                </mat-expansion-panel-header>
+                                                <p>{{ job.description.split("Опис")[0] }}</p>
+                                                <p>Опис {{ job.description.split("Опис")[1] }}</p>
+                                            </mat-expansion-panel>
+                                        </mat-accordion>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+
+                            </div>
+                        </div>
+                    </mat-card-content>
+                    <mat-divider inset></mat-divider>
+                    <mat-card-actions *ngIf="!noSelection">
+                        <span class="button-container">
+                            <div class="spinner-container" *ngIf="loading">
+                                <mat-spinner diameter="24"></mat-spinner>
+                            </div>
+
+                            <button [disabled]="loading" mat-raised-button color="primary" (click)="assignJobs()">
+                                Assign jobs
+                            </button>
+                        </span>
+                    </mat-card-actions>
+                    <mat-card-footer>
+                        <mat-progress-bar mode="indeterminate" *ngIf="timePreviewLoading"></mat-progress-bar>
+                    </mat-card-footer>
+                </mat-card>
+            </div>
         </div>
+        <br />
+        <br />
     </div>
 </div>

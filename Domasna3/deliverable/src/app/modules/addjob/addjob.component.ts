@@ -25,7 +25,7 @@ export const _filter = (opt: string[], value: string): string[] => {
 })
 export class AddjobComponent implements OnInit {
   map!: L.Map;
-  marker =  L.marker(L.GeoJSON.coordsToLatLng([0, 0]));
+  marker = L.marker(L.GeoJSON.coordsToLatLng([0, 0]));
 
   addJobLoading = false;
   addLocationLoading = false;
@@ -49,7 +49,7 @@ export class AddjobComponent implements OnInit {
     });
     this.marker.addTo(this.map);
 
-    this.map.on('click', <LeafletMouseEvent>(e: { latlng: any; }) => { 
+    this.map.on('click', <LeafletMouseEvent>(e: { latlng: any }) => {
       this.marker.removeFrom(this.map);
       this.marker = L.marker(e.latlng);
       this.marker.addTo(this.map);
@@ -123,19 +123,21 @@ export class AddjobComponent implements OnInit {
   }
 
   getNumbers(cityName: string, streetName: string) {
-    this.addressService.getNumbers(cityName, streetName).subscribe(
-      (data) => {
-        console.log(data);
-        this.numbers = data;
-        this.addJobError = '';
-      },
-      (error) => {
-        console.log(error);
-        this.numbers = [];
-        this.addJobError = error.error.message;
-      }
-    )
-  } 
+    if (streetName) {
+      this.addressService.getNumbers(cityName, streetName).subscribe(
+        (data) => {
+          console.log(data);
+          this.numbers = data;
+          this.addJobError = '';
+        },
+        (error) => {
+          console.log(error);
+          this.numbers = [];
+          this.addJobError = error.error.message;
+        }
+      );
+    }
+  }
 
   addJob(): void {
     let city = this.addJobForm.get('city')!.value;
@@ -158,10 +160,8 @@ export class AddjobComponent implements OnInit {
           this.addJobSuccess = data.message;
         },
         (error) => {
-          if(error.status == '0')
-            this.addJobError = "Server unavailable"
-          else
-            this.addJobError = error.error.message;
+          if (error.status == '0') this.addJobError = 'Server unavailable';
+          else this.addJobError = error.error.message;
         }
       );
   }
@@ -170,12 +170,18 @@ export class AddjobComponent implements OnInit {
     let city = this.addLocationForm.get('addCity')!.value;
     let street = this.addLocationForm.get('addStreet')!.value;
     let number = this.addLocationForm.get('addNumber')!.value;
-    
+
     this.addLocationSuccess = '';
     this.addLocationError = '';
     this.addLocationLoading = true;
     this.addressService
-      .addLocation(city, street, number, this.addLocationLat, this.addLocationLon)
+      .addLocation(
+        city,
+        street,
+        number,
+        this.addLocationLat,
+        this.addLocationLon
+      )
       .pipe(
         finalize(() => {
           this.addLocationLoading = false;
@@ -191,12 +197,10 @@ export class AddjobComponent implements OnInit {
           this.addLocationLon = 0;
         },
         (error) => {
-          if(error.status == '0')
-            this.addLocationError = "Server unavailable";
-          else
-            this.addLocationError = error.error.message;
+          if (error.status == '0') this.addLocationError = 'Server unavailable';
+          else this.addLocationError = error.error.message;
         }
-      )
+      );
   }
 
   ngOnInit() {
@@ -215,7 +219,7 @@ export class AddjobComponent implements OnInit {
     });
 
     this.initMap();
-    this.tiles.addTo(this.map)
+    this.tiles.addTo(this.map);
   }
 
   initCityOptions() {
@@ -228,25 +232,21 @@ export class AddjobComponent implements OnInit {
   }
 
   initStreetOptions() {
-    this.streetOptions = this.addJobForm
-        .get('street')!
-        .valueChanges.pipe(
-          startWith(''),
-          debounceTime(400),
-          distinctUntilChanged(),
-          map((value) => this._filterStreetGroup(value))
-        );
+    this.streetOptions = this.addJobForm.get('street')!.valueChanges.pipe(
+      startWith(''),
+      debounceTime(400),
+      distinctUntilChanged(),
+      map((value) => this._filterStreetGroup(value))
+    );
   }
 
   initNumberOptions() {
-    this.numberOptions = this.addJobForm
-        .get('number')!
-        .valueChanges.pipe(
-          startWith(''),
-          debounceTime(400),
-          distinctUntilChanged(),
-          map((value) => this._filterNumberGroup(value))
-        );
+    this.numberOptions = this.addJobForm.get('number')!.valueChanges.pipe(
+      startWith(''),
+      debounceTime(400),
+      distinctUntilChanged(),
+      map((value) => this._filterNumberGroup(value))
+    );
   }
 
   private _filterCityGroup(value: string): string[] {

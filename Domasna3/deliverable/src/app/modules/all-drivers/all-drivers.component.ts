@@ -51,9 +51,8 @@ export class AllDriversComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  edit(position: number) {
-    console.log('edit: ' + position);
-    let driver = this.dataSource.data[0];
+  edit(driver: Driver) {
+    let position = this.dataSource.data.indexOf(driver);
     console.log(driver)
     this.openDialog(driver);
   }
@@ -115,8 +114,11 @@ export class EditUserDialog {
     private allDriverDetailsService: AllDriverDetailsService,
   ) {}
 
+  error = '';
+
   onNoClick(): void {
     this.dialogRef.close();
+    this.error = '';
   }
 
   editUserForm = this.formBuilder.group({
@@ -127,11 +129,14 @@ export class EditUserDialog {
 
   onSubmit() {
     console.log(this.data.id)
+    this.error = '';
     this.allDriverDetailsService.editDriver(this.data.id, this.editUserForm.get('email')!.value, this.editUserForm.get('phone')!.value)
       .subscribe(
         (data) => {
           this.onNoClick();
-        
+        },
+        (error) => {
+          this.error = error.error.message;
         }
       )
   }

@@ -12,6 +12,10 @@
   }
 }
 
+.mat-card {
+  width: 100%;
+}
+
 .spinner-container {
   position: absolute;
   top: 0;
@@ -27,6 +31,7 @@
 .button-container {
   display: inline-block;
   position: relative;
+  margin: 10px;
 }
 
 .drag-drop-list {
@@ -50,6 +55,11 @@
   cursor: move;
   background: white;
   font-size: 14px;
+}
+
+.drag-drop-box.cdk-drag-disabled {
+  background: #ccc;
+  cursor: default;
 }
 
 .cdk-drag-preview {

@@ -22,6 +22,10 @@ public class VroomRequest {
         jobs.add(new VroomJob(id ,lon, lat));
     }
 
+    public void addDriver(Long id, double lon, double lat) {
+        vehicles.add(new VroomVehicle(id, lon, lat));
+    }
+
     public void addDriver(Long id, double lon, double lat, int capacity) {
         vehicles.add(new VroomVehicle(id, lon, lat, capacity));
     }

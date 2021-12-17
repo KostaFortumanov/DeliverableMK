@@ -18,6 +18,12 @@ public class VroomVehicle {
     public VroomVehicle() {
     }
 
+    public VroomVehicle(Long id, double lon, double lat) {
+        this.id = id;
+        this.start = new double[]{lon, lat};
+        this.end = new double[]{lon, lat};
+    }
+
     public VroomVehicle(Long id, double lon, double lat, int capacity) {
         this.id = id;
         this.start = new double[]{lon, lat};

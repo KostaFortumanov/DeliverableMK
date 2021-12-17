@@ -1,31 +1,25 @@
 package com.dians.deliverable.controller;
 
+import com.dians.deliverable.exceptions.NoJobsException;
 import com.dians.deliverable.models.*;
 import com.dians.deliverable.payload.request.AddJobRequest;
 import com.dians.deliverable.payload.response.JobResponse;
+import com.dians.deliverable.payload.response.OptimizationDriverResponse;
+import com.dians.deliverable.payload.response.OptimizationPreviewResponse;
 import com.dians.deliverable.payload.vroom.VroomRequest;
 import com.dians.deliverable.payload.response.MessageResponse;
 import com.dians.deliverable.service.CityService;
 import com.dians.deliverable.service.JobService;
+import com.dians.deliverable.service.OptimizationService;
 import com.dians.deliverable.service.UserService;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.net.PortUnreachableException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,17 +29,16 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/jobs")
 public class JobController {
 
-    @Value("${vroomUrl}")
-    private String vroomUrl;
-
     private final CityService cityService;
     private final JobService jobService;
     private final UserService userService;
+    private final OptimizationService optimizationService;
 
-    public JobController(CityService cityService, JobService jobService, UserService userService) {
+    public JobController(CityService cityService, JobService jobService, UserService userService, OptimizationService optimizationService) {
         this.cityService = cityService;
         this.jobService = jobService;
         this.userService = userService;
+        this.optimizationService = optimizationService;
     }
 
     @GetMapping("/unassignedJobs")
@@ -95,15 +88,8 @@ public class JobController {
 
         String cityName = capitalize(addJobRequest.getCity());
         String streetName = capitalize(addJobRequest.getStreet());
+        String number = addJobRequest.getNumber();
         String description = addJobRequest.getDescription();
-        int number;
-        try {
-            number = Integer.parseInt(addJobRequest.getNumber());
-        } catch (NumberFormatException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Invalid number format"));
-        }
 
         City city = cityService.findByName(cityName);
         if (city != null) {
@@ -113,7 +99,7 @@ public class JobController {
 
             if (street != null) {
                 Address address = street.getAddresses().stream()
-                        .filter(a -> a.getNumber() == number)
+                        .filter(a -> a.getNumber().equals(number))
                         .findFirst().orElse(null);
 
                 if (address != null) {
@@ -146,53 +132,10 @@ public class JobController {
                     .body(new MessageResponse("No drivers selected"));
         }
 
-        VroomRequest vroomRequest = new VroomRequest();
-        double startLon = 21.4443826;
-        double startLat = 41.994568;
-
-        List<Job> unassignedJobs = jobService.getAllByStatus(JobStatus.NOT_ASSIGNED);
-
-        if(unassignedJobs.size() == 0) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("All jobs have been assigned"));
-        }
-
-        unassignedJobs.forEach(job -> vroomRequest.addJob(job.getId(), job.getLon(), job.getLat()));
-
-        int capacity = (int) Math.ceil(1f * unassignedJobs.size() / driverIds.size());
-        List<AppUser> alreadyHaveJobs = new ArrayList<>();
-        driverIds.forEach(driverId -> {
-            AppUser driver = userService.getById(driverId);
-            if(driver.getCurrentJobs().size() == 0) {
-                vroomRequest.addDriver(driverId, startLon, startLat, capacity);
-            } else {
-                alreadyHaveJobs.add(driver);
-            }
-        });
-
-        HttpClient client = HttpClientBuilder.create().build();
         try {
-            HttpPost post = new HttpPost(vroomUrl);
-            StringEntity postingString = new StringEntity(new JSONObject(vroomRequest).toString());
-            post.setEntity(postingString);
-            post.setHeader("Content-type", "application/json");
-            HttpResponse response = client.execute(post);
+            String response = optimizationService.getVroomResponse(driverIds);
 
-            InputStream in = response.getEntity().getContent();
-            StringBuilder textBuilder = new StringBuilder();
-            try (Reader reader = new BufferedReader(new InputStreamReader
-                    (in, Charset.forName(StandardCharsets.UTF_8.name())))) {
-                int c;
-                while ((c = reader.read()) != -1) {
-                    textBuilder.append((char) c);
-                }
-            }
-
-            System.out.println(textBuilder.toString());
-            JSONObject json = new JSONObject(textBuilder.toString());
-            int unassigned = json.getJSONObject("summary").getInt("unassigned");
-
+            JSONObject json = new JSONObject(response);
             JSONArray routes = json.getJSONArray("routes");
             for(int i=0; i<routes.length(); i++) {
                 JSONObject route = routes.getJSONObject(i);
@@ -212,22 +155,90 @@ public class JobController {
             }
 
             return ResponseEntity
-                    .ok(new MessageResponse(String.format(" Assigned %d of %d jobs. %s", unassignedJobs.size() - unassigned, unassignedJobs.size(),
-                            alreadyHaveJobs.size() == 0 ? "" :
-                                    "Drivers: " + alreadyHaveJobs.stream()
-                                            .map(driver -> driver.getFirstName() + " " + driver.getLastName())
-                                            .collect(Collectors.joining(", ")) + " already have jobs.")));
+                    .ok(new MessageResponse("Assigned jobs succesfully"));
+
+        } catch (NoJobsException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("All jobs have been assigned"));
         } catch (JSONException e) {
             System.out.println(e.toString());
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("All selected drivers already have assigned jobs"));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error"));
+                    .body(new MessageResponse("Can't reach optimization service"));
         }
+    }
+
+    @PostMapping("/preview")
+    public ResponseEntity<?> getPreview(@RequestBody List<Long> driverIds) {
+        try {
+            String vroomResponse = optimizationService.getVroomResponse(driverIds);
+            System.out.println(vroomResponse);
+            OptimizationPreviewResponse response = new OptimizationPreviewResponse();
+
+            JSONObject json = new JSONObject(vroomResponse);
+            int unassignedJobs = json.getJSONObject("summary").getInt("unassigned");
+            int totalJobs = jobService.getAllByStatus(JobStatus.NOT_ASSIGNED).size();
+
+            JSONArray routes = json.getJSONArray("routes");
+            int totalDrivers = driverIds.size();
+            int usedDrivers = routes.length();
+
+            int maxTime = Integer.MIN_VALUE;
+            double fuel = 0;
+            for(int i=0; i<routes.length(); i++) {
+                JSONObject route = routes.getJSONObject(i);
+                int duration = route.getInt("duration");
+                int service = route.getInt("service");
+                fuel += 1f * duration * 7/9000;
+
+                maxTime = Math.max(duration+service, maxTime);
+                Long driverId = route.getLong("vehicle");
+                AppUser driver = userService.getById(driverId);
+                OptimizationDriverResponse mockDriver = new OptimizationDriverResponse();
+                mockDriver.setFirstName(driver.getFirstName());
+                mockDriver.setLastName(driver.getLastName());
+                JSONArray steps = route.getJSONArray("steps");
+                for(int j=1; j<steps.length() - 1; j++) {
+                    JSONObject step = steps.getJSONObject(j);
+                    Long jobId = step.getLong("id");
+                    Job job = jobService.getById(jobId);
+                    mockDriver.getJobs().add(job);
+                }
+                response.getDrivers().add(mockDriver);
+            }
+
+            int hours = maxTime / 3600;
+            int minutes = (maxTime % 3600) / 60;
+            int seconds = maxTime % 60;
+
+            response.setAssignedJobs(String.format("%d/%d", totalJobs-unassignedJobs, totalJobs));
+            response.setDriversUsed(String.format("%d/%d", usedDrivers, totalDrivers));
+            response.setFuelCost(String.format("%.2fL", fuel));
+            response.setTime(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+
+            return ResponseEntity
+                    .ok(response);
+
+        } catch (NoJobsException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("All jobs have been assigned"));
+        } catch (JSONException e) {
+            System.out.println(e.toString());
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("All selected drivers already have assigned jobs"));
+        } catch (PortUnreachableException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Can't reach optimization service"));
+        }
+
     }
 
     @DeleteMapping("/delete/{id}")

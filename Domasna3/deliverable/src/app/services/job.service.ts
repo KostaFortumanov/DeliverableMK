@@ -33,6 +33,11 @@ export class JobService {
     return this.http.post(API + '/jobs/assignJobs', driverIds)
   }
 
+  getPreview(driverIds: number[]): Observable<any> {
+    return this.http.post(API + '/jobs/preview', driverIds);
+  }
+
+
   getUnassigned(): Observable<any> {
     return this.http.get(API + '/jobs/unassignedJobs');
   }

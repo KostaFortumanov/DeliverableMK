@@ -12,6 +12,8 @@
         <button style="display: inline;" mat-raised-button type="submit" color="primary">Ok</button>
         <button mat-button (click)="onNoClick()" type="reset">No Thanks</button>
     </form>
+    <br/>
+    <mat-error style="display: inline;" *ngIf="error"> {{error}}</mat-error>
 </div>
 <div mat-dialog-actions>
 </div>

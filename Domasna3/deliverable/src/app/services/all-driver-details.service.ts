@@ -23,7 +23,7 @@ export class AllDriverDetailsService {
     return this.http.delete(API + '/drivers/delete/' + driverId);
   }
 
-  editDriver(id: number, newEmail: string, newPhonenumber: string) {
+  editDriver(id: number, newEmail: string, newPhonenumber: string): Observable<any> {
     return this.http.post(API + '/drivers/edit', {
       id,
       newEmail,

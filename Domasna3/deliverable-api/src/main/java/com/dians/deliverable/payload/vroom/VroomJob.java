@@ -5,14 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-//@Setter
-//@AllArgsConstructor
+@Setter
+@AllArgsConstructor
 public class VroomJob {
 
     private Long id;
     private double[] location;
-    private final int[] amount = new int[]{1};
+    private int[] amount;
     private final int service = 300;
+//    private int[][] time_windows = new int[][]{{3600, 6000}, {8000, 10000}};
 
     public VroomJob() {
     }

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -34,13 +35,13 @@ public class DriverController {
         List<DriverInfoResponse> response = new ArrayList<>();
 
         drivers.forEach(driver -> response.add(new DriverInfoResponse(driver.getId(),
-                        driver.getFirstName() + driver.getLastName(),
+                        driver.getFirstName() + " " + driver.getLastName(),
                                 driver.getEmail(),
                                 driver.getPhoneNumber()
                 )));
 
         return ResponseEntity
-                .ok(response);
+                .ok(response.stream().sorted(Comparator.comparing(DriverInfoResponse::getId)));
     }
 
     @DeleteMapping("/delete/{id}")
@@ -58,14 +59,21 @@ public class DriverController {
 
     @PostMapping("/edit")
     public ResponseEntity<?> editDriver(@RequestBody EditDriverRequest editDriverRequest) {
+
         AppUser user = userService.getById(editDriverRequest.getId());
+
+        if(!user.getEmail().equals(editDriverRequest.getNewEmail()) && userService.existsByEmail(editDriverRequest.getNewEmail())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Email already exists"));
+        }
 
         user.setEmail(editDriverRequest.getNewEmail());
         user.setPhoneNumber(editDriverRequest.getNewPhonenumber());
         userService.save(user);
 
         return ResponseEntity
-                .ok("");
+                .ok(new MessageResponse("Changes saved"));
     }
 
     @GetMapping("/selectDrivers")
@@ -75,11 +83,11 @@ public class DriverController {
         List<SelectDriverResponse> response = new ArrayList<>();
 
         drivers.forEach(driver ->
-                response.add(new SelectDriverResponse(driver.getId(), driver.getFirstName() + " " + driver.getLastName())));
-
-
+                response.add(new SelectDriverResponse(driver.getId(),
+                        driver.getFirstName() + " " + driver.getLastName(),
+                                driver.getCurrentJobs().size() == 0)));
 
         return ResponseEntity
-                .ok(response);
+                .ok(response.stream().sorted(Comparator.comparing(SelectDriverResponse::isAvailable).reversed()));
     }
 }

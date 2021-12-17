@@ -5,27 +5,43 @@
     <mat-error style="display: inline;" *ngIf="error"> {{error}}</mat-error>
     <div *ngIf="!error">
         <mat-tab-group>
-            <mat-tab label="Not assigned"> 
-            <mat-accordion>
-                <mat-expansion-panel hideToggle *ngFor="let job of notAssigned">
-                    <mat-expansion-panel-header >
-                        <mat-panel-title>
-                            {{ job.id }}
-                        </mat-panel-title>
-                        <mat-panel-description>
-                            {{ job.address }}
-                        </mat-panel-description>
-                    </mat-expansion-panel-header>
-                    <p>{{ job.description.split("Опис")[0] }}</p>
-                    <p>Опис {{ job.description.split("Опис")[1] }}</p>
-                    <button mat-raised-button color="warn" (click)="deleteJob(job.id)">Delete</button>
-                </mat-expansion-panel>
-            </mat-accordion>
-        </mat-tab>
-        <mat-tab label="Assigned"> 
-            <mat-accordion>
-                <mat-expansion-panel hideToggle *ngFor="let job of assigned">
-                    <mat-expansion-panel-header >
+            <mat-tab label="Not assigned">
+                <mat-accordion>
+                    <mat-expansion-panel hideToggle *ngFor="let job of notAssigned">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ job.id }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ job.address }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <p>{{ job.description.split("Опис")[0] }}</p>
+                        <p>Опис {{ job.description.split("Опис")[1] }}</p>
+                        <button mat-raised-button color="warn" (click)="deleteJob(job.id)">Delete</button>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </mat-tab>
+            <mat-tab label="Assigned">
+                <mat-accordion>
+                    <mat-expansion-panel hideToggle *ngFor="let job of assigned">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ job.id }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ job.address }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <p>{{ job.description.split("Опис")[0] }}</p>
+                        <p>Опис {{ job.description.split("Опис")[1] }}</p>
+                        <p>Driver: {{ job.driver }}</p>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </mat-tab>
+            <mat-tab label="Completed">
+                <mat-expansion-panel hideToggle *ngFor="let job of completed">
+                    <mat-expansion-panel-header>
                         <mat-panel-title>
                             {{ job.id }}
                         </mat-panel-title>
@@ -37,23 +53,8 @@
                     <p>Опис {{ job.description.split("Опис")[1] }}</p>
                     <p>Driver: {{ job.driver }}</p>
                 </mat-expansion-panel>
-            </mat-accordion>
-        </mat-tab>
-        <mat-tab label="Completed">
-            <mat-expansion-panel hideToggle *ngFor="let job of completed">
-                <mat-expansion-panel-header >
-                    <mat-panel-title>
-                        {{ job.id }}
-                    </mat-panel-title>
-                    <mat-panel-description>
-                        {{ job.address }}
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
-                <p>{{ job.description.split("Опис")[0] }}</p>
-            <p>Опис {{ job.description.split("Опис")[1] }}</p>
-            <p>Driver: {{ job.driver }}</p>
-        </mat-expansion-panel>
-    </mat-tab>
-</mat-tab-group>
-</div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+    <br/>
 </div>

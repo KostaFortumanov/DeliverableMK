@@ -7,10 +7,30 @@ import {
 import { SelectDriverService } from 'src/app/services/select-driver.service';
 import { finalize } from 'rxjs/operators';
 import { JobService } from 'src/app/services/job.service';
+import { pipe } from 'rxjs';
 
 export interface SelectDriver {
-  id: number,
-  fullName: string
+  id: number;
+  fullName: string;
+  available: boolean;
+}
+
+export interface Preview {
+  assignedJobs: string;
+  driversUsed: string;
+  fuelCost: string;
+  time: string;
+}
+
+export interface Driver {
+  firstName: string;
+  lastName: string;
+  jobs: Job[];
+}
+export interface Job {
+  id: number;
+  address: string;
+  description: string;
 }
 
 @Component({
@@ -19,51 +39,73 @@ export interface SelectDriver {
   styleUrls: ['./select-drivers.component.scss'],
 })
 export class SelectDriversComponent implements OnInit {
-
   show = false;
   pageLoading = true;
-  error = '';
+  pageLoadError = '';
 
-  assignJobError = '';
-  assignJobSuccess = '';
+  error = '';
+  success = '';
   loading = false;
 
   constructor(
     private selectDriverService: SelectDriverService,
-    private jobService: JobService 
+    private jobService: JobService
   ) {}
 
   ngOnInit(): void {
-
-    this.selectDriverService.getDrivers()
-      .pipe(
-        finalize(() => {
-          this.pageLoading = false;
-          this.show = true;
-        })
-      )
-      .subscribe(
-        (data) => {
-          this.drivers = data;
-        },
-        (error) => {
-          this.error = 'Could not get drivers'
-        }
-      )
+    this.getDrivers();
   }
 
   drivers: SelectDriver[] = [];
 
   selected: SelectDriver[] = [];
 
+  detailDrivers: Driver[] = [];
+
+  fuelPreview: Preview = {
+    assignedJobs: '',
+    driversUsed: '',
+    fuelCost: '',
+    time: '',
+  };
+  timePreview: Preview = {
+    assignedJobs: '',
+    driversUsed: '',
+    fuelCost: '',
+    time: '',
+  };
+  fuelPreviewLoading = false;
+  timePreviewLoading = false;
+  noSelection = true;
+
+  getDrivers() {
+    this.selectDriverService
+    .getDrivers()
+    .pipe(
+      finalize(() => {
+        this.pageLoading = false;
+        this.show = true;
+      })
+    )
+    .subscribe(
+      (data) => {
+        this.drivers = data;
+      },
+      (error) => {
+        this.pageLoadError = 'Could not get drivers';
+      }
+    );
+  }
+
   assignJobs() {
     console.log(this.selected);
     let payload: number[] = [];
-    this.selected.forEach(driver => payload.push(driver.id));
+    this.selected.forEach((driver) => payload.push(driver.id));
     this.loading = true;
-    this.assignJobSuccess = '';
-    this.assignJobError = '';
-    this.jobService.assignJobs(payload)
+    this.success = '';
+    this.error = '';
+    this.jobService
+      .assignJobs(payload)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -71,16 +113,49 @@ export class SelectDriversComponent implements OnInit {
       )
       .subscribe(
         (data) => {
-          this.assignJobSuccess = data.message;
+          this.success = data.message;
+          this.getDrivers();
+          this.selected = [];
         },
         (error) => {
-          if(error.status == '0')
-            this.assignJobError = "Server unavailable"
-          else
-            this.assignJobError = error.error.message;
+          if (error.status == '0') this.error = 'Server unavailable';
+          else this.error = error.error.message;
         }
-      )
+      );
+  }
 
+  preview() {
+    if (this.selected.length > 0) {
+      this.error = '';
+      this.success = '';
+      this.timePreviewLoading = true;
+      let payload: number[] = [];
+      this.selected.forEach((driver) => payload.push(driver.id));
+      this.jobService
+        .getPreview(payload)
+        .pipe(
+          finalize(() => {
+            this.timePreviewLoading = false;
+          })
+        )
+        .subscribe(
+          (data) => {
+            console.log(data);
+            this.noSelection = false;
+            this.timePreview = data;
+            this.detailDrivers = data.drivers;
+            this.timePreviewLoading = false;
+            this.error = '';
+          },
+          (error) => {
+            console.log(error)
+            this.noSelection = true;
+            this.error = error.error.message;
+          }
+        );
+    } else {
+      this.noSelection = true;
+    }
   }
 
   drop(event: CdkDragDrop<SelectDriver[]>) {
@@ -97,6 +172,8 @@ export class SelectDriversComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
+      this.preview();
     }
+
   }
 }

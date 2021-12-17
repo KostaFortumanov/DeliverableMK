@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +49,7 @@ public class AppUser implements UserDetails {
     private Boolean enabled;
 
     @OneToMany
-    private List<Job> currentJobs;
+    private List<Job> currentJobs = new ArrayList<>();
 
     public AppUser() {
     }

@@ -11,4 +11,5 @@ public class SelectDriverResponse {
 
     private Long id;
     private String fullName;
+    private boolean available;
 }

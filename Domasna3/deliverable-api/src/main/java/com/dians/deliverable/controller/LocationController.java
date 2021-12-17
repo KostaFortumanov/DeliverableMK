@@ -75,7 +75,7 @@ public class LocationController {
 
         List<String> numbersList = street.getAddresses().stream()
                 .sorted(Comparator.comparing(Address::getNumber))
-                .map(address -> address.getNumber() + "")
+                .map(Address::getNumber)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(numbersList);
@@ -97,17 +97,10 @@ public class LocationController {
                     .body(new MessageResponse("Select location on map"));
         }
 
-        int number;
-        try {
-            number = Integer.parseInt(addLocationRequest.getNumber());
-        } catch (NumberFormatException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Invalid number format"));
-        }
 
         String cityName = capitalize(addLocationRequest.getCity());
         String streetName = capitalize(addLocationRequest.getStreet());
+        String number = addLocationRequest.getNumber();
         double lat = addLocationRequest.getLat();
         double lon = addLocationRequest.getLon();
 
@@ -140,7 +133,7 @@ public class LocationController {
         }
 
         Address address = street.getAddresses().stream()
-                .filter(a -> a.getNumber() == number)
+                .filter(a -> a.getNumber().equals(number))
                 .findFirst().orElse(null);
 
         if(address == null) {

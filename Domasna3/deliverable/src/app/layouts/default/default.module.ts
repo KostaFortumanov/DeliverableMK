@@ -14,6 +14,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar'
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -63,7 +64,8 @@ import { MatExpansionModule } from '@angular/material/expansion'
     MatIconModule,
     MatDialogModule,
     MatTabsModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatProgressBarModule
   ],
   providers: [DashboardService],
 })
