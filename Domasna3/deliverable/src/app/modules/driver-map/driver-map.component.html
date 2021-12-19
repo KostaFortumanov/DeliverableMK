@@ -2,6 +2,11 @@
   <mat-label>Number of paths</mat-label>
   <input matInput type="number" [(ngModel)]="show" (change)="drawMap()"/>
 </mat-form-field>
+<div class="button-container">
+  <button *ngIf="jobs.length > 0" mat-raised-button color="primary" (click)="finishJob()">
+    Finish current job {{ jobs[0].order }}
+  </button>
+</div>
 <div class="map-container">
   <div class="map-frame">
     <div id="driverMap">

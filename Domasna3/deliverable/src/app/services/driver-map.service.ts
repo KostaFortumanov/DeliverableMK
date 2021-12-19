@@ -40,4 +40,8 @@ export class DriverMapService {
       httpOptions
     );
   }
+
+  finishJob(id: number): Observable<any> {
+    return this.http.get(API + "/map/finishJob");
+  }
 }

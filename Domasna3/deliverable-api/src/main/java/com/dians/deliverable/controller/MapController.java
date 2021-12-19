@@ -2,8 +2,10 @@ package com.dians.deliverable.controller;
 
 import com.dians.deliverable.models.AppUser;
 import com.dians.deliverable.models.Job;
+import com.dians.deliverable.models.JobStatus;
 import com.dians.deliverable.payload.request.UpdateCurrentPathRequest;
 import com.dians.deliverable.payload.response.JobResponse;
+import com.dians.deliverable.service.JobService;
 import com.dians.deliverable.service.RouteFinderService;
 import com.dians.deliverable.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +22,12 @@ public class MapController {
 
     private final RouteFinderService routeFinderService;
     private final UserService userService;
+    private final JobService jobService;
 
-    public MapController(RouteFinderService routeFinderService, UserService userService) {
+    public MapController(RouteFinderService routeFinderService, UserService userService, JobService jobService) {
         this.routeFinderService = routeFinderService;
         this.userService = userService;
+        this.jobService = jobService;
     }
 
     @GetMapping("/allPaths")
@@ -31,6 +35,12 @@ public class MapController {
 
         AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<Job> jobs = userService.getById(user.getId()).getCurrentJobs();
+
+        if(jobs.size() == 0) {
+            return ResponseEntity
+                    .badRequest().body("");
+        }
+
         double startLon = 21.4443826;
         double startLat = 41.994568;
 
@@ -39,13 +49,32 @@ public class MapController {
 
     }
 
+    @GetMapping("/finishJob")
+    public ResponseEntity<?> finishJob() {
+        AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        user = userService.getById(user.getId());
+        Job job = user.getCurrentJobs().remove(0);
+        job.setStatus(JobStatus.COMPLETED);
+        userService.save(user);
+        jobService.save(job);
+        return ResponseEntity.ok("");
+    }
+
     @GetMapping("/currentJobs")
     public ResponseEntity<?> getCurrentJobs() {
         AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<Job> jobs = userService.getById(user.getId()).getCurrentJobs();
+        user = userService.getById(user.getId());
+        List<Job> jobs = user.getCurrentJobs();
+
+        if(jobs.size() == 0) {
+            return ResponseEntity
+                    .badRequest().body("");
+        }
 
         List<JobResponse> response = new ArrayList<>();
-        jobs.forEach(job -> response.add(new JobResponse(job.getId(), job.getAddress(), job.getDescription())));
+        for(int i=0; i<jobs.size(); i++) {
+            response.add(new JobResponse(jobs.get(i).getId(), jobs.get(i).getAddress(), jobs.get(i).getDescription(), user.getTotalJobs()-jobs.size() + i + 1));
+        }
 
         return ResponseEntity
                 .ok(response);

@@ -3,6 +3,9 @@
         <button mat-icon-button (click)="toggleSideBar()">
             <mat-icon>menu</mat-icon>
         </button>
+        <button mat-icon-button (click)="sendMessage()">
+            sendMessage
+        </button>
 
         <span><img src="assets/delivery.png" class="logo"></span>
 
@@ -10,20 +13,20 @@
             <ul fxLayout="row" fxLayoutGap="20px">
                 <li>
                     <button mat-icon-button [matMenuTriggerFor]="menu1">
-                        <mat-icon [matBadge]="numNotifications" matBadgeColor="accent">mail_outline</mat-icon>
+                        <mat-icon [matBadge]="getNumNotifications()" matBadgeColor="accent">mail_outline</mat-icon>
                     </button>
                     <mat-menu #menu1="matMenu">
                         <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="notifications">
-                            <div *ngIf="numNotifications > 0">
-                                <button *ngFor="let notification of notifications" mat-menu-item>
+                            <div *ngIf="getNumNotifications() > 0">
+                                <button *ngFor="let notification of getNotifications()" mat-menu-item>
                                     {{ notification.message }}
                                 </button>
                                 <mat-divider></mat-divider>
-                                <button class="dismiss" mat-button color="warn" ng>
+                                <button class="dismiss" mat-button color="warn" (click)="dismissAll()">
                                     Dismiss all
                                 </button>
                             </div>
-                            <div *ngIf="numNotifications == 0">
+                            <div *ngIf="getNumNotifications() == 0">
                                 <button mat-menu-item>
                                     No notifications
                                 </button>

@@ -26,14 +26,29 @@ export class ManagerJobsComponent implements OnInit {
   assigned: Job[] = [];
   completed: Job[] = [];
 
+  filterNotAssigned: Job[] = [];
+  filterAssigned: Job[] = [];
+  filterCompleted: Job[] = [];
+
   ngOnInit(): void {
     this.getUnassigned();
     this.getAssigned();
     this.getCompleted();
   }
 
-  filter(arr: Job[]) {
-    return arr.filter((job) => {
+  filter() {
+
+    this.filterNotAssigned =  this.notAssigned.filter((job) => {
+      let all = job.id + ' ' + job.address + ' ' + job.description + job.driver;
+      return all.toLowerCase().includes(this.searchField.toLowerCase());
+    });
+
+    this.filterAssigned =  this.assigned.filter((job) => {
+      let all = job.id + ' ' + job.address + ' ' + job.description + job.driver;
+      return all.toLowerCase().includes(this.searchField.toLowerCase());
+    });
+
+    this.filterCompleted =  this.completed.filter((job) => {
       let all = job.id + ' ' + job.address + ' ' + job.description + job.driver;
       return all.toLowerCase().includes(this.searchField.toLowerCase());
     });
@@ -57,6 +72,7 @@ export class ManagerJobsComponent implements OnInit {
       .subscribe(
         (data) => {
           this.notAssigned = data;
+          this.filterNotAssigned = data;
         },
         (error) => {
           this.error = 'Server Unavailable';
@@ -76,6 +92,7 @@ export class ManagerJobsComponent implements OnInit {
       .subscribe(
         (data) => {
           this.assigned = data;
+          this.filterAssigned = data;
         },
         (error) => {
           this.error = 'Server Unavailable';
@@ -95,6 +112,7 @@ export class ManagerJobsComponent implements OnInit {
       .subscribe(
         (data) => {
           this.completed = data;
+          this.filterCompleted = data;
         },
         (error) => {
           this.error = 'Server Unavailable';

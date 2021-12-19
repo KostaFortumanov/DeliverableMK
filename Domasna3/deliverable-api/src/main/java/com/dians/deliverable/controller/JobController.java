@@ -6,12 +6,8 @@ import com.dians.deliverable.payload.request.AddJobRequest;
 import com.dians.deliverable.payload.response.JobResponse;
 import com.dians.deliverable.payload.response.OptimizationDriverResponse;
 import com.dians.deliverable.payload.response.OptimizationPreviewResponse;
-import com.dians.deliverable.payload.vroom.VroomRequest;
 import com.dians.deliverable.payload.response.MessageResponse;
-import com.dians.deliverable.service.CityService;
-import com.dians.deliverable.service.JobService;
-import com.dians.deliverable.service.OptimizationService;
-import com.dians.deliverable.service.UserService;
+import com.dians.deliverable.service.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.PortUnreachableException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -33,12 +28,14 @@ public class JobController {
     private final JobService jobService;
     private final UserService userService;
     private final OptimizationService optimizationService;
+    private final NotificationService notificationService;
 
-    public JobController(CityService cityService, JobService jobService, UserService userService, OptimizationService optimizationService) {
+    public JobController(CityService cityService, JobService jobService, UserService userService, OptimizationService optimizationService, NotificationService notificationService) {
         this.cityService = cityService;
         this.jobService = jobService;
         this.userService = userService;
         this.optimizationService = optimizationService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/unassignedJobs")
@@ -151,11 +148,12 @@ public class JobController {
                     jobService.save(job);
                     driver.getCurrentJobs().add(job);
                 }
+                driver.setTotalJobs(driver.getCurrentJobs().size());
                 userService.save(driver);
             }
 
             return ResponseEntity
-                    .ok(new MessageResponse("Assigned jobs succesfully"));
+                    .ok(new MessageResponse("Assigned jobs successfully"));
 
         } catch (NoJobsException e) {
             return ResponseEntity
@@ -247,6 +245,16 @@ public class JobController {
 
         return ResponseEntity
                 .ok("");
+    }
+
+    @GetMapping("/notifications")
+    public ResponseEntity<?> getNotifications() {
+        return ResponseEntity.ok(notificationService.getAll());
+    }
+
+    @DeleteMapping("/deleteAllNotifications")
+    public void deleteAllNotifications() {
+        notificationService.deleteAll();
     }
 
     private String capitalize(String str) {

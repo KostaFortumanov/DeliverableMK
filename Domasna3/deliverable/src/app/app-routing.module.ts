@@ -14,6 +14,7 @@ import { AuthGuard } from './helpers';
 import { RegisterFormComponent } from './modules/register-form/register-form.component';
 import { NewAccountComponent } from './modules/new-account/new-account.component';
 import { ManagerJobsComponent } from './modules/manager-jobs/manager-jobs.component';
+import { ManagerMapComponent } from './modules/manager-map/manager-map.component';
 
 const routes: Routes = [
   {
@@ -28,6 +29,10 @@ const routes: Routes = [
       {
         path: 'map',
         component: DriverMapComponent,
+      },
+      {
+        path: 'managerMap',
+        component: ManagerMapComponent,
       },
       {
         path: 'addJob',

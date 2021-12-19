@@ -13,11 +13,29 @@ public class JobResponse {
     private String address;
     private String description;
     private String driver;
+    private int order;
+
+    public JobResponse() {
+    }
 
     public JobResponse(Long id, String address, String description) {
         this.id = id;
         this.address = address;
         this.description = description;
         driver = "";
+    }
+
+    public JobResponse(Long id, String address, String description, String driver) {
+        this.id = id;
+        this.address = address;
+        this.description = description;
+        this.driver = driver;
+    }
+
+    public JobResponse(Long id, String address, String description, int order) {
+        this.id = id;
+        this.address = address;
+        this.description = description;
+        this.order = order;
     }
 }

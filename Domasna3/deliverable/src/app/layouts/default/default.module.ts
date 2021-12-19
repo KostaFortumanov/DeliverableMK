@@ -30,6 +30,8 @@ import { MatDialogModule } from '@angular/material/dialog'
 import { ManagerJobsComponent } from 'src/app/modules/manager-jobs/manager-jobs.component';
 import { MatTabsModule } from '@angular/material/tabs'
 import { MatExpansionModule } from '@angular/material/expansion'
+import { ManagerMapComponent } from 'src/app/modules/manager-map/manager-map.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,8 @@ import { MatExpansionModule } from '@angular/material/expansion'
     AllDriversComponent,
     SelectDriversComponent,
     EditUserDialog,
-    ManagerJobsComponent
+    ManagerJobsComponent,
+    ManagerMapComponent
   ],
   imports: [
     CommonModule,
@@ -65,7 +68,8 @@ import { MatExpansionModule } from '@angular/material/expansion'
     MatDialogModule,
     MatTabsModule,
     MatExpansionModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatSelectModule
   ],
   providers: [DashboardService],
 })

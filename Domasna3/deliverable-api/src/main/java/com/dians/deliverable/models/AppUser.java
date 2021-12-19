@@ -48,6 +48,7 @@ public class AppUser implements UserDetails {
     private UserRole userRole;
     private Boolean enabled;
 
+    private Integer totalJobs = 0;
     @OneToMany
     private List<Job> currentJobs = new ArrayList<>();
 

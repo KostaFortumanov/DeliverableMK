@@ -6,9 +6,9 @@
     <div *ngIf="!error">
         <mat-form-field appearance="fill">
             <mat-label>Search</mat-label>
-            <input matInput type="text" [(ngModel)]='searchField' />
+            <input matInput type="text" [(ngModel)]='searchField' (ngModelChange)="filter()" />
           </mat-form-field>
-        <mat-tab-group (selectedTabChange)="searchField=''">
+        <mat-tab-group (selectedTabChange)="searchField=''" (selectedTabChange)="filter()">
             <mat-tab label="Not assigned">
                 <mat-card style="width: 400px; margin: 10px 10px 10px 0;">
                     <h3>
@@ -16,7 +16,7 @@
                     </h3>
                 </mat-card>
                 <mat-accordion>
-                    <mat-expansion-panel hideToggle *ngFor="let job of filter(notAssigned)">
+                    <mat-expansion-panel hideToggle *ngFor="let job of filterNotAssigned">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
                                 {{ job.id }}
@@ -38,7 +38,7 @@
                     </h3>
                 </mat-card>
                 <mat-accordion>
-                    <mat-expansion-panel hideToggle *ngFor="let job of filter(assigned)">
+                    <mat-expansion-panel hideToggle *ngFor="let job of filterAssigned">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
                                 {{ job.id }}
@@ -60,7 +60,7 @@
                             Total: {{ completed.length }}
                         </h3>
                     </mat-card>
-                    <mat-expansion-panel hideToggle *ngFor="let job of filter(completed)">
+                    <mat-expansion-panel hideToggle *ngFor="let job of filterCompleted">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
                                 {{ job.id }}
