@@ -24,6 +24,7 @@
     "highcharts": "^9.3.2",
     "highcharts-angular": "^2.10.0",
     "leaflet": "^1.7.1",
+    "leaflet-easybutton": "^2.4.0",
     "leaflet-fullscreen": "^1.0.2",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",

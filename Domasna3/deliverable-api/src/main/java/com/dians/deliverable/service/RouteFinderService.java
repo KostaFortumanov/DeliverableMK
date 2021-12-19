@@ -15,6 +15,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -26,16 +27,19 @@ public class RouteFinderService {
     public List<List<List<Double>>> getPaths(double startLon, double startLat, List<Job> jobs) {
 
         List<List<List<Double>>> allPaths = new ArrayList<>();
-        allPaths.add(getPath(startLon, startLat, jobs.get(0).getLon(), jobs.get(0).getLat()));
-        for(int i=0; i< jobs.size()-1; i++) {
-            allPaths.add(getPath(jobs.get(i).getLon(), jobs.get(i).getLat(), jobs.get(i+1).getLon(), jobs.get(i+1).getLat()));
+        if(jobs.size() != 0) {
+            allPaths.add(getPath(startLon, startLat, jobs.get(0).getLon(), jobs.get(0).getLat()));
+            for (int i = 0; i < jobs.size() - 1; i++) {
+                allPaths.add(getPath(jobs.get(i).getLon(), jobs.get(i).getLat(), jobs.get(i + 1).getLon(), jobs.get(i + 1).getLat()));
+            }
+            allPaths.add(getPath(jobs.get(jobs.size() - 1).getLon(), jobs.get(jobs.size() - 1).getLat(), startLon, startLat));
+
         }
-        allPaths.add(getPath(jobs.get(jobs.size()-1).getLon(), jobs.get(jobs.size()-1).getLat(), startLon, startLat));
 
         return allPaths;
     }
 
-    private List<List<Double>> getPath(double lon1, double lat1, double lon2, double lat2) {
+    public List<List<Double>> getPath(double lon1, double lat1, double lon2, double lat2) {
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest r = HttpRequest.newBuilder()

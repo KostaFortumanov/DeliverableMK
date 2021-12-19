@@ -2,15 +2,13 @@ package com.dians.deliverable.controller;
 
 import com.dians.deliverable.models.AppUser;
 import com.dians.deliverable.models.Job;
+import com.dians.deliverable.payload.request.UpdateCurrentPathRequest;
 import com.dians.deliverable.payload.response.JobResponse;
 import com.dians.deliverable.service.RouteFinderService;
 import com.dians.deliverable.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,5 +49,21 @@ public class MapController {
 
         return ResponseEntity
                 .ok(response);
+    }
+
+    @PostMapping("/updateCurrentPath")
+    public ResponseEntity<?> updateCurrentPath(@RequestBody UpdateCurrentPathRequest request) {
+
+        System.out.println( request.getLon() + " "
+                 + request.getLat()
+                 + " " + request.getDestinationLon()
+                 + " " + request.getDestinationLat());
+
+        return ResponseEntity
+                .ok(routeFinderService.getPath(
+                        request.getLon(),
+                        request.getLat(),
+                        request.getDestinationLon(),
+                        request.getDestinationLat()));
     }
 }
