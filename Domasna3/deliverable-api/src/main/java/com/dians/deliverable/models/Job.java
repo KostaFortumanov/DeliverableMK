@@ -43,6 +43,7 @@ public class Job {
     private JobStatus status;
     @OneToOne
     private AppUser assignedTo;
+    private Double distance = 0.0;
 
     public Job() {
     }

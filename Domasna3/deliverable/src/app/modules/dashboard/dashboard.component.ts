@@ -2,12 +2,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { DashboardService } from 'src/app/services/dashboard.service';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
 
 export interface Driver {
   name: string;
-  position: number;
-  deliveries: number;
-  fuel: string;
+  distance: number;
+  fuel: number;
+  numJobs: string;
 }
 
 @Component({
@@ -21,17 +22,31 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  bigChart: Object[] = [];
   cards: Object[] = [];
-  pieChart: Object[] = [];
-  constructor(private dashboardService: DashboardService) {}
+  role: string;
+  data!: Object[];
+  constructor(
+    private dashboardService: DashboardService,
+    private tokenStorageService: TokenStorageService
+  ) {
+    this.role = tokenStorageService.getUser().role;
+  }
 
   ngOnInit(): void {
-    this.dataSource = new MatTableDataSource<Driver>(
-      this.dashboardService.table()
-    );
-    this.bigChart = this.dashboardService.bigChart();
-    this.cards = this.dashboardService.cards();
+
+    if(this.role == 'DRIVER') {
+    this.dashboardService.getDriverTotal().subscribe(
+      (data) => {
+        this.dataSource = new MatTableDataSource<Driver>(data);
+      }
+    )
+    } else {
+      this.dashboardService.getManagerTotal().subscribe(
+        (data) => {
+          this.dataSource = new MatTableDataSource<Driver>(data);
+        }
+      )
+    }
   }
 
   ngAfterViewInit() {

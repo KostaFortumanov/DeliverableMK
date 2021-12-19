@@ -8,14 +8,11 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -24,22 +21,28 @@ public class RouteFinderService {
     @Value("${orsUrl}")
     private String orsUrl;
 
+    private final JobService jobService;
+
+    public RouteFinderService(JobService jobService) {
+        this.jobService = jobService;
+    }
+
     public List<List<List<Double>>> getPaths(double startLon, double startLat, List<Job> jobs) {
 
         List<List<List<Double>>> allPaths = new ArrayList<>();
-        if(jobs.size() != 0) {
-            allPaths.add(getPath(startLon, startLat, jobs.get(0).getLon(), jobs.get(0).getLat()));
+        if (jobs.size() != 0) {
+            allPaths.add(getPath(startLon, startLat, jobs.get(0).getLon(), jobs.get(0).getLat(), jobs.get(0)));
             for (int i = 0; i < jobs.size() - 1; i++) {
-                allPaths.add(getPath(jobs.get(i).getLon(), jobs.get(i).getLat(), jobs.get(i + 1).getLon(), jobs.get(i + 1).getLat()));
+                allPaths.add(getPath(jobs.get(i).getLon(), jobs.get(i).getLat(), jobs.get(i + 1).getLon(), jobs.get(i + 1).getLat(), jobs.get(i + 1)));
             }
-            allPaths.add(getPath(jobs.get(jobs.size() - 1).getLon(), jobs.get(jobs.size() - 1).getLat(), startLon, startLat));
+            allPaths.add(getPath(jobs.get(jobs.size() - 1).getLon(), jobs.get(jobs.size() - 1).getLat(), startLon, startLat, null));
 
         }
 
         return allPaths;
     }
 
-    public List<List<Double>> getPath(double lon1, double lat1, double lon2, double lat2) {
+    public List<List<Double>> getPath(double lon1, double lat1, double lon2, double lat2, Job job) {
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest r = HttpRequest.newBuilder()
@@ -60,8 +63,19 @@ public class RouteFinderService {
         JSONObject geometry = features.getJSONObject(0).getJSONObject("geometry");
         JSONArray coordinates = geometry.getJSONArray("coordinates");
 
+        if (job != null) {
+            if (job.getDistance() == 0.0) {
+                JSONObject properties = features.getJSONObject(0).getJSONObject("properties");
+                JSONObject summary = properties.getJSONArray("segments").getJSONObject(0);
+                double distance = summary.getDouble("distance");
+                job.setDistance(distance);
+                jobService.save(job);
+            }
+
+        }
+
         List<List<Double>> path = new ArrayList<>();
-        for(int i=0; i<coordinates.length(); i++) {
+        for (int i = 0; i < coordinates.length(); i++) {
             List<Double> points = new ArrayList<>();
             points.add(coordinates.getJSONArray(i).getDouble(0));
             points.add(coordinates.getJSONArray(i).getDouble(1));

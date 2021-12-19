@@ -17,6 +17,8 @@ import { CardComponent } from './widgets/card/card.component';
 
 import { HeaderComponent } from './components/header/header.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,8 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     MatCardModule,
     ScrollingModule,
     MatBadgeModule,
+    MatSelectModule,
+    FormsModule
   ],
   exports: [HeaderComponent, SidebarComponent, AreaComponent, CardComponent],
 })

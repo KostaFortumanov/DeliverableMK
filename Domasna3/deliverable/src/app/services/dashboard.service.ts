@@ -1,40 +1,29 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+
+const API = environment.apiUrl;
 
 @Injectable({
   providedIn: 'root',
 })
 export class DashboardService {
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
-  bigChart() {
-    return [
-      {
-        name: 'Километри',
-        data: [502, 635, 809, 947, 1402, 3634, 5268],
-      },
-      {
-        name: 'Гориво',
-        data: [18, 31, 54, 156, 339, 818, 1201],
-      },
-    ];
+  getDriverDashboard(month: number): Observable<any> {
+    return this.http.get(API + "/dashboard/driver/" + month);
   }
 
-  cards() {
-    return [71, 78, 39, 66, 43];
+  getManagerDashboard(month: number): Observable<any>  {
+    return this.http.get(API + "/dashboard/manager/" + month);
   }
 
-  table() {
-    return [
-      {
-        position: 1,
-        name: 'Костадин Фортуманов',
-        deliveries: 70,
-        fuel: '192L',
-      },
-      { position: 2, name: 'Никола Ценевски', deliveries: 80, fuel: '180L' },
-      { position: 3, name: 'Станко Станчевски', deliveries: 67, fuel: '167L' },
-      { position: 4, name: 'Петар Петровски', deliveries: 43, fuel: '143L' },
-      { position: 5, name: 'Стефан Стефанов', deliveries: 23, fuel: '123L' },
-    ];
+  getDriverTotal(): Observable<any> {
+    return this.http.get(API + '/dashboard/driverTotal');
+  }
+
+  getManagerTotal(): Observable<any> {
+    return this.http.get(API + '/dashboard/managerTotal');
   }
 }
