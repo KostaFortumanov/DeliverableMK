@@ -32,6 +32,7 @@ import { MatTabsModule } from '@angular/material/tabs'
 import { MatExpansionModule } from '@angular/material/expansion'
 import { ManagerMapComponent } from 'src/app/modules/manager-map/manager-map.component';
 import { MatSelectModule } from '@angular/material/select';
+import { DriverJobsComponent } from 'src/app/modules/driver-jobs/driver-jobs.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { MatSelectModule } from '@angular/material/select';
     SelectDriversComponent,
     EditUserDialog,
     ManagerJobsComponent,
-    ManagerMapComponent
+    ManagerMapComponent,
+    DriverJobsComponent
   ],
   imports: [
     CommonModule,

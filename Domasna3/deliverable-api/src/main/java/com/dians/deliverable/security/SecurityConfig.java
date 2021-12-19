@@ -37,7 +37,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/drivers/delete/**",
             "/api/drivers/edit",
             "/api/drivers/selectDrivers",
-            "/api/jobs/**",
+            "/api/jobs/unassignedJobs",
+            "/api/jobs/assignedJobs",
+            "/api/jobs/completedJobs",
+            "/api/jobs/addJob",
+            "/api/jobs/assignJobs",
+            "/api/jobs/preview",
+            "/api/jobs/delete/**",
             "/api/locations/**",
             "/api/notifications/**"
     };
@@ -45,7 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final static String[] driverMatchers = {
             "/api/map/allPaths",
             "/api/map/finishJob",
-            "/api/map/currentJobs"
+            "/api/map/currentJobs",
+            "/api/jobs/myAssigned",
+            "/api/jobs/myCompleted"
     };
 
 

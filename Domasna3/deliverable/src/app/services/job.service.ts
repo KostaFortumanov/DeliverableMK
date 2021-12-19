@@ -37,7 +37,6 @@ export class JobService {
     return this.http.post(API + '/jobs/preview', driverIds);
   }
 
-
   getUnassigned(): Observable<any> {
     return this.http.get(API + '/jobs/unassignedJobs');
   }
@@ -51,6 +50,14 @@ export class JobService {
   }
 
   deleteJob(id: number): Observable<any> {
-    return this.http.delete(API + '/jobs/delete/' + id)
+    return this.http.delete(API + '/jobs/delete/' + id);
+  }
+
+  getMyAssignedJobs(): Observable<any> {
+    return this.http.get(API + '/jobs/myAssigned');
+  }
+
+  getMyCompletedJobs(): Observable<any> {
+    return this.http.get(API + '/jobs/myCompleted');
   }
 }

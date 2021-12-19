@@ -15,6 +15,7 @@ import { RegisterFormComponent } from './modules/register-form/register-form.com
 import { NewAccountComponent } from './modules/new-account/new-account.component';
 import { ManagerJobsComponent } from './modules/manager-jobs/manager-jobs.component';
 import { ManagerMapComponent } from './modules/manager-map/manager-map.component';
+import { DriverJobsComponent } from './modules/driver-jobs/driver-jobs.component';
 
 const routes: Routes = [
   {
@@ -61,6 +62,12 @@ const routes: Routes = [
         component: ManagerJobsComponent,
         canActivate: [AuthGuard],
         data: { role: 'MANAGER'}
+      },
+      {
+        path: 'myJobs',
+        component: DriverJobsComponent,
+        canActivate: [AuthGuard],
+        data: { role: 'DRIVER'}
       }
     ],
   },

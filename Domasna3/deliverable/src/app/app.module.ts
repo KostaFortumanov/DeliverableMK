@@ -8,6 +8,7 @@ import { LoginModule } from './layouts/login/login.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { JwtInterceptor } from './helpers';
+import { DriverJobsComponent } from './modules/driver-jobs/driver-jobs.component';
 
 @NgModule({
   declarations: [AppComponent],

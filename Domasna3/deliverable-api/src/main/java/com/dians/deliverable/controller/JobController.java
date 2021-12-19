@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.PortUnreachableException;
@@ -243,6 +244,33 @@ public class JobController {
 
         return ResponseEntity
                 .ok("");
+    }
+
+    @GetMapping("/myAssigned")
+    public ResponseEntity<?> getMyAssignedJobs() {
+
+        AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Job> jobs = userService.getById(user.getId()).getCurrentJobs();
+
+        List<JobResponse> response = new ArrayList<>();
+
+        jobs.forEach(job -> response.add(new JobResponse(job.getId(), job.getAddress(), job.getDescription(), user.getFirstName() + " " + user.getLastName())));
+
+        return ResponseEntity
+                .ok(response);
+    }
+
+    @GetMapping("/myCompleted")
+    public ResponseEntity<?> getMyCompletedJobs() {
+        AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Job> jobs = jobService.getByDriver(user);
+
+        List<JobResponse> response = new ArrayList<>();
+
+        jobs.forEach(job -> response.add(new JobResponse(job.getId(), job.getAddress(), job.getDescription(), user.getFirstName() + " " + user.getLastName())));
+
+        return ResponseEntity
+                .ok(response);
     }
 
     private String capitalize(String str) {
