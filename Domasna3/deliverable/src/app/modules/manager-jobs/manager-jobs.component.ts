@@ -12,17 +12,15 @@ export interface Job {
 @Component({
   selector: 'app-manager-jobs',
   templateUrl: './manager-jobs.component.html',
-  styleUrls: ['./manager-jobs.component.scss']
+  styleUrls: ['./manager-jobs.component.scss'],
 })
 export class ManagerJobsComponent implements OnInit {
-
   show = false;
   pageLoading = true;
   error = '';
+  searchField = '';
 
-  constructor(
-    private jobService: JobService
-  ) { }
+  constructor(private jobService: JobService) {}
 
   notAssigned: Job[] = [];
   assigned: Job[] = [];
@@ -31,20 +29,25 @@ export class ManagerJobsComponent implements OnInit {
   ngOnInit(): void {
     this.getUnassigned();
     this.getAssigned();
-    this.getCompleted();  
+    this.getCompleted();
+  }
+
+  filter(arr: Job[]) {
+    return arr.filter((job) => {
+      let all = job.id + ' ' + job.address + ' ' + job.description + job.driver;
+      return all.toLowerCase().includes(this.searchField.toLowerCase());
+    });
   }
 
   deleteJob(id: number) {
-    this.jobService.deleteJob(id)
-      .subscribe(
-        (data) => {
-          this.getUnassigned();
-        }
-      )
+    this.jobService.deleteJob(id).subscribe((data) => {
+      this.getUnassigned();
+    });
   }
 
   getUnassigned() {
-    this.jobService.getUnassigned()
+    this.jobService
+      .getUnassigned()
       .pipe(
         finalize(() => {
           this.pageLoading = false;
@@ -56,44 +59,46 @@ export class ManagerJobsComponent implements OnInit {
           this.notAssigned = data;
         },
         (error) => {
-          this.error = "Server Unavailable"
+          this.error = 'Server Unavailable';
         }
-    );
+      );
   }
 
   getAssigned() {
-    this.jobService.getAssigned()
-    .pipe(
-      finalize(() => {
-        this.pageLoading = false;
-        this.show = true;
-      })
-    )
-    .subscribe(
-      (data) => {
-        this.assigned = data;
-      },
-      (error) => {
-        this.error = "Server Unavailable"
-      }
-    );
+    this.jobService
+      .getAssigned()
+      .pipe(
+        finalize(() => {
+          this.pageLoading = false;
+          this.show = true;
+        })
+      )
+      .subscribe(
+        (data) => {
+          this.assigned = data;
+        },
+        (error) => {
+          this.error = 'Server Unavailable';
+        }
+      );
   }
 
   getCompleted() {
-    this.jobService.getCompleted()
-    .pipe(
-      finalize(() => {
-        this.pageLoading = false;
-        this.show = true;
-      })
-    )
-    .subscribe(
-      (data) => {
-        this.completed = data;
-      },
-      (error) => {
-        this.error = "Server Unavailable"
-      }
-    );
+    this.jobService
+      .getCompleted()
+      .pipe(
+        finalize(() => {
+          this.pageLoading = false;
+          this.show = true;
+        })
+      )
+      .subscribe(
+        (data) => {
+          this.completed = data;
+        },
+        (error) => {
+          this.error = 'Server Unavailable';
+        }
+      );
   }
 }
