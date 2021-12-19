@@ -12,10 +12,10 @@ export class NotificationService {
   constructor(private http: HttpClient) {}
 
   getNotifications(): Observable<any> {
-    return this.http.get(API + '/jobs/notifications');
+    return this.http.get(API + '/notifications/all');
   }
 
   dismissAll() {
-    this.http.delete(API + '/jobs/deleteAllNotifications').subscribe();
+    this.http.delete(API + '/notifications/deleteAll').subscribe();
   }
 }

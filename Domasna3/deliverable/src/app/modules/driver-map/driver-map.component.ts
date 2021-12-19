@@ -298,5 +298,6 @@ export class DriverMapComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     navigator.geolocation.clearWatch(this.navigation);
+    this.stompClient1.disconnect();
   }
 }

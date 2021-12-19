@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "${frontUrl}", maxAge = 3600)
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -122,6 +122,8 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(newAccountRequest.getPassword()));
         user.setEnabled(true);
         userService.save(user);
+
+        newAccountTokenService.delete(token);
 
         return ResponseEntity.ok(new MessageResponse("Account created successfully"));
     }

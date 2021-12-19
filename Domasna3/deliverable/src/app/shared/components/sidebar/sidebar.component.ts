@@ -18,7 +18,7 @@ export class SidebarComponent implements OnInit {
       this.firstName = user.firstName;
       this.lastName = user.lastName;
       this.email = user.email;
-      this.role = 'ROLE_MANAGER';
+      this.role = user.role;
     }
   }
 

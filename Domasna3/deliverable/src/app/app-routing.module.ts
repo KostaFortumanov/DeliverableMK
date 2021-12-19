@@ -29,26 +29,38 @@ const routes: Routes = [
       {
         path: 'map',
         component: DriverMapComponent,
+        canActivate: [AuthGuard],
+        data: { role: 'DRIVER'}
       },
       {
         path: 'managerMap',
         component: ManagerMapComponent,
+        canActivate: [AuthGuard],
+        data: { role: 'MANAGER'}
       },
       {
         path: 'addJob',
         component: AddjobComponent,
+        canActivate: [AuthGuard],
+        data: { role: 'MANAGER'}
       },
       {
         path: 'allDrivers',
         component: AllDriversComponent,
+        canActivate: [AuthGuard],
+        data: { role: 'MANAGER'}
       },
       {
         path: 'selectDrivers',
         component: SelectDriversComponent,
+        canActivate: [AuthGuard],
+        data: { role: 'MANAGER'}
       },
       {
         path: 'jobs',
-        component: ManagerJobsComponent
+        component: ManagerJobsComponent,
+        canActivate: [AuthGuard],
+        data: { role: 'MANAGER'}
       }
     ],
   },
@@ -64,6 +76,7 @@ const routes: Routes = [
         path: 'register',
         component: RegisterFormComponent,
         canActivate: [AuthGuard],
+        data: { role: 'MANAGER'}
       },
       {
         path: 'newAccount',

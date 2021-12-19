@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
 import { environment } from 'src/environments/environment';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { DriverMapService } from 'src/app/services/driver-map.service';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
 
 export interface Driver {
   id: number;
@@ -30,16 +31,25 @@ const webSocketEndPoint = environment.wsEndPoint;
   templateUrl: './manager-map.component.html',
   styleUrls: ['./manager-map.component.scss'],
 })
-export class ManagerMapComponent implements OnInit {
-  constructor(private driverMapService: DriverMapService) {
-    this.connect();
-    setInterval(() => {
-      for (let i = 0; i < this.drivers.length; i++) {
-        let diff = Math.floor((Date.now() - this.drivers[i].lastUpdate) / 1000);
-        console.log(Date.now() + ' ' + this.drivers[i].lastUpdate);
-        this.drivers[i].seconds = diff;
-      }
-    }, 1000);
+export class ManagerMapComponent implements OnInit, OnDestroy {
+  interval!: any;
+
+  constructor(
+    private driverMapService: DriverMapService,
+    private tokenStorageService: TokenStorageService
+  ) {
+    if (tokenStorageService.getUser().role === 'MANAGER') {
+      this.connect();
+      this.interval = setInterval(() => {
+        for (let i = 0; i < this.drivers.length; i++) {
+          let diff = Math.floor(
+            (Date.now() - this.drivers[i].lastUpdate) / 1000
+          );
+          console.log(Date.now() + ' ' + this.drivers[i].lastUpdate);
+          this.drivers[i].seconds = diff;
+        }
+      }, 1000);
+    }
   }
 
   getDrivers() {
@@ -67,7 +77,6 @@ export class ManagerMapComponent implements OnInit {
   }
 
   selected: number[] = [];
-  topic: string = '/user/' + 13 + '/queue/messages';
   drivers: Driver[] = [];
   polylines: L.Polyline[] = [];
   markersStart: L.Marker[] = [];
@@ -97,7 +106,7 @@ export class ManagerMapComponent implements OnInit {
     this.stompClient2 = Stomp.over(ws);
 
     this.stompClient2.connect({}, () => {
-      this.stompClient2.subscribe(this.topic, (message: any) => {
+      this.stompClient2.subscribe('/user/managerMap/queue/messages', (message: any) => {
         message = JSON.parse(message.body);
         console.log(message);
         let exists = false;
@@ -231,5 +240,10 @@ export class ManagerMapComponent implements OnInit {
       center: [41.9961, 21.4316],
       zoom: 13,
     });
+  }
+
+  ngOnDestroy(): void {
+      clearInterval(this.interval);
+      this.stompClient2.disconnect();
   }
 }

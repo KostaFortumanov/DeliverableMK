@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "${frontUrl}", maxAge = 3600)
 @RequestMapping("/api/jobs")
 public class JobController {
 
@@ -28,14 +28,12 @@ public class JobController {
     private final JobService jobService;
     private final UserService userService;
     private final OptimizationService optimizationService;
-    private final NotificationService notificationService;
 
-    public JobController(CityService cityService, JobService jobService, UserService userService, OptimizationService optimizationService, NotificationService notificationService) {
+    public JobController(CityService cityService, JobService jobService, UserService userService, OptimizationService optimizationService) {
         this.cityService = cityService;
         this.jobService = jobService;
         this.userService = userService;
         this.optimizationService = optimizationService;
-        this.notificationService = notificationService;
     }
 
     @GetMapping("/unassignedJobs")
@@ -245,16 +243,6 @@ public class JobController {
 
         return ResponseEntity
                 .ok("");
-    }
-
-    @GetMapping("/notifications")
-    public ResponseEntity<?> getNotifications() {
-        return ResponseEntity.ok(notificationService.getAll());
-    }
-
-    @DeleteMapping("/deleteAllNotifications")
-    public void deleteAllNotifications() {
-        notificationService.deleteAll();
     }
 
     private String capitalize(String str) {

@@ -22,15 +22,24 @@ export class HeaderComponent implements OnInit {
   notifications: Notification[] = [];
   numNotifications: number = 0;
 
-  topic: string =  "/user/" + 12 + "/queue/messages";
   stompClient: any;
+
+  role!: string;
 
   constructor(
     private tokenStorageService: TokenStorageService,
     private notificationService: NotificationService,
     private router: Router,
   ) {
-    this.connect();
+
+    let user = tokenStorageService.getUser();
+    if (user) {
+      this.role = user.role;
+    }
+
+    if(this.role == 'MANAGER') {
+      this.connect();
+    }
   }
 
   connect() {
@@ -39,7 +48,7 @@ export class HeaderComponent implements OnInit {
     this.stompClient = Stomp.over(ws);
     
     this.stompClient.connect({},  () => {
-        this.stompClient.subscribe(this.topic,  (message: any) => {
+        this.stompClient.subscribe("/user/managerJob/queue/messages",  (message: any) => {
           console.log(message)
           message = JSON.parse(message.body)
           this.notifications.push(message)
@@ -61,12 +70,6 @@ export class HeaderComponent implements OnInit {
     return this.notifications.length;
   }
 
-  onMessageReceived(message: any) {
-
-    
-    console.log("Message Recieved from Server :: " + message);
-  }
-
   errorCallBack(error: string) {
     console.log('error')
     console.log("errorCallBack -> " + error)
@@ -81,15 +84,13 @@ export class HeaderComponent implements OnInit {
         (data) => {
           this.notifications = data;
           this.numNotifications = this.notifications.length;
+        },
+        (error) => {
+
         }
       );
 
   }
-
-  sendMessage() {
-    this.stompClient.send( "/app/manager", {});
-  }
-
 
   toggleSideBar() {
     this.toggleSideBarEvent.emit();

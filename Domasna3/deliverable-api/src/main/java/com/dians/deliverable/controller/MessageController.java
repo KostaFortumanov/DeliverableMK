@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "${frontUrl}", maxAge = 3600)
 public class MessageController {
 
     private final SimpMessagingTemplate messagingTemplate;
@@ -23,20 +23,15 @@ public class MessageController {
         this.notificationService = notificationService;
     }
 
-    @MessageMapping("/manager")
-    public void processMessage() {
-        messagingTemplate.convertAndSendToUser("12","/queue/messages", new MessageResponse("zdravo"));
-    }
-
     @MessageMapping("/manager/finishJob")
     public void finishedJob(@RequestBody String message) {
         notificationService.save(new Notification(message));
-        messagingTemplate.convertAndSendToUser("12","/queue/messages", new MessageResponse(message));
+        messagingTemplate.convertAndSendToUser("managerJob","/queue/messages", new MessageResponse(message));
     }
 
     @MessageMapping("/manager/map")
     public void userPath(@Payload ManagerMapRequest request) {
         System.out.println(request.getName());
-        messagingTemplate.convertAndSendToUser("13","/queue/messages", request);
+        messagingTemplate.convertAndSendToUser("managerMap","/queue/messages", request);
     }
 }

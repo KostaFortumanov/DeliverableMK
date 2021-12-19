@@ -20,4 +20,8 @@ public class NewAccountTokenService {
     public NewAccountToken getToken(String token) {
         return repository.findByToken(token).orElse(null);
     }
+
+    public void delete(NewAccountToken token) {
+        repository.delete(token);
+    }
 }

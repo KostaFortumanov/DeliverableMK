@@ -1,12 +1,12 @@
 package com.dians.deliverable.security;
 
+import com.dians.deliverable.models.UserRole;
 import com.dians.deliverable.security.jwt.AuthEntryPointJwt;
 import com.dians.deliverable.security.jwt.AuthTokenFilter;
 import com.dians.deliverable.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,6 +25,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final AuthEntryPointJwt unauthorizedHandler;
 
+    private final static String[] publicMatchers = {
+            "/api/auth/login",
+            "/api/auth/newAccount",
+            "/ws/**"
+    };
+
+    private final static String[] managerMatchers = {
+            "/api/auth/register",
+            "/api/drivers/allDriverInfo",
+            "/api/drivers/delete/**",
+            "/api/drivers/edit",
+            "/api/drivers/selectDrivers",
+            "/api/jobs/**",
+            "/api/locations/**",
+            "/api/notifications/**"
+    };
+
+    private final static String[] driverMatchers = {
+            "/api/map/allPaths",
+            "/api/map/finishJob",
+            "/api/map/currentJobs"
+    };
+
+
     public SecurityConfig(UserService userService, AuthEntryPointJwt unauthorizedHandler) {
         this.userService = userService;
         this.unauthorizedHandler = unauthorizedHandler;
@@ -35,7 +59,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/api/auth/**", "/ws/**").permitAll()
+                .authorizeRequests().antMatchers(publicMatchers).permitAll()
+                .antMatchers(managerMatchers).hasAuthority(UserRole.MANAGER.name())
+                .antMatchers(driverMatchers).hasAuthority(UserRole.DRIVER.name())
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

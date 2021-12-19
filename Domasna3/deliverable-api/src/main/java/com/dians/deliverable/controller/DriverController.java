@@ -16,7 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "${frontUrl}", maxAge = 3600)
 @RequestMapping("/api/drivers")
 public class DriverController {
 

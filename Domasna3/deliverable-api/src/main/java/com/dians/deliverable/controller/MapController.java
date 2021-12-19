@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "${frontUrl}", maxAge = 3600)
 @RequestMapping("/api/map")
 public class MapController {
 

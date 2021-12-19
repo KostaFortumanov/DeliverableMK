@@ -10,24 +10,17 @@
 
     <h2 matSubheader> Pages </h2>
 
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/">Dashboard</a>
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/map">Map</a>
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/jobs">Jobs</a>
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/addJob">Add job</a>
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/allDrivers">All drivers</a>
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/selectDrivers">Select drivers</a>
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/register">Add new employee</a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/" *ngIf="role=='DRIVER'">Dashboard</a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/map" *ngIf="role=='DRIVER'">Map</a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/myJobs" *ngIf="role=='DRIVER'">My jobs</a>
 
-    <!-- <a mat-list-item routerLinkActive="list-item-active" routerLink="/" *(ngIf)="user.role=='ROLE_USER'">Dashboard</a>
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/map" *(ngIf)="user.role=='ROLE_USER'">Map</a>
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/jobs" *(ngIf)="user.role=='ROLE_USER'">My jobs</a>
-
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/" *(ngIf)="user.role=='ROLE_MODERATOR'">Dashboard</a>
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/manager/map" *(ngIf)="user.role=='ROLE_MODERATOR'">Map</a>
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/addJob" *(ngIf)="user.role=='ROLE_MODERATOR'">Add job</a>
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/allDrivers" *(ngIf)="user.role=='ROLE_MODERATOR'">All drivers</a>
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/selectDrivers" *(ngIf)="user.role=='ROLE_MODERATOR'">Select drivers</a>
-    <a mat-list-item routerLinkActive="list-item-active" routerLink="/newDriver" *(ngIf)="user.role=='ROLE_MODERATOR'">Add new driver</a> -->
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/" *ngIf="role=='MANAGER'">Dashboard</a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/managerMap" *ngIf="role=='MANAGER'">Map</a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/jobs" *ngIf="role=='MANAGER'">All jobs</a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/addJob" *ngIf="role=='MANAGER'">Add job</a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/allDrivers" *ngIf="role=='MANAGER'">All drivers</a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/selectDrivers" *ngIf="role=='MANAGER'">Assign jobs</a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/register" *ngIf="role== 'MANAGER'">Add new driver</a>
 
     <mat-divider></mat-divider>
 

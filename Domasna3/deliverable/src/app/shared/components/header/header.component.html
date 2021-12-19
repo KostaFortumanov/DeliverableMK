@@ -3,17 +3,14 @@
         <button mat-icon-button (click)="toggleSideBar()">
             <mat-icon>menu</mat-icon>
         </button>
-        <button mat-icon-button (click)="sendMessage()">
-            sendMessage
-        </button>
 
         <span><img src="assets/delivery.png" class="logo"></span>
 
         <div fxFlex fxLayout="row" fxLayoutAlign="flex-end">
             <ul fxLayout="row" fxLayoutGap="20px">
-                <li>
-                    <button mat-icon-button [matMenuTriggerFor]="menu1">
-                        <mat-icon [matBadge]="getNumNotifications()" matBadgeColor="accent">mail_outline</mat-icon>
+                <li *ngIf="role=='MANAGER'">
+                    <button  mat-icon-button [matMenuTriggerFor]="menu1">
+                        <mat-icon [matBadge]="getNumNotifications()" matBadgeColor="accent" [matBadgeHidden]="getNumNotifications() == 0">mail_outline</mat-icon>
                     </button>
                     <mat-menu #menu1="matMenu">
                         <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="notifications">
