@@ -13,7 +13,7 @@ public class VroomVehicle {
     private double[] end;
     private String profile = "driving-car";
     private int[] capacity;
-    private int[] time_window = new int[]{3600, 25200};
+    private int[] time_window;
 
     public VroomVehicle() {
     }

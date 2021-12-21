@@ -47,6 +47,7 @@ export class AreaComponent implements OnInit {
   ngOnInit(): void {
 
     let month = new Date().getMonth() + 1;
+    this.selected = month;
 
     if (this.role === 'DRIVER') {
       this.dashboardService.getDriverDashboard(month).subscribe((data) => {
@@ -68,8 +69,8 @@ export class AreaComponent implements OnInit {
   init(data: any) {
     console.log(data);
     for (let day of data) {
-      this.distance.data.push(day.distance);
-      this.fuel.data.push(day.fuel);
+      this.distance.data.push(parseFloat(day.distance.toFixed(2)));
+      this.fuel.data.push(parseFloat(day.fuel.toFixed(2)));
       this.numJobs.data.push(day.numJobs);
     }
     this.data = [this.distance, this.fuel, this.numJobs];

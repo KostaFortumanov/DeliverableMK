@@ -16,6 +16,7 @@ import { NewAccountComponent } from './modules/new-account/new-account.component
 import { ManagerJobsComponent } from './modules/manager-jobs/manager-jobs.component';
 import { ManagerMapComponent } from './modules/manager-map/manager-map.component';
 import { DriverJobsComponent } from './modules/driver-jobs/driver-jobs.component';
+import { ConfigurationComponent } from './modules/configuration/configuration.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,12 @@ const routes: Routes = [
       {
         path: 'map',
         component: DriverMapComponent,
+        canActivate: [AuthGuard],
+        data: { role: 'DRIVER'}
+      },
+      {
+        path: 'myJobs',
+        component: DriverJobsComponent,
         canActivate: [AuthGuard],
         data: { role: 'DRIVER'}
       },
@@ -64,10 +71,10 @@ const routes: Routes = [
         data: { role: 'MANAGER'}
       },
       {
-        path: 'myJobs',
-        component: DriverJobsComponent,
+        path: 'config',
+        component: ConfigurationComponent,
         canActivate: [AuthGuard],
-        data: { role: 'DRIVER'}
+        data: {role: 'MANAGER'}
       }
     ],
   },

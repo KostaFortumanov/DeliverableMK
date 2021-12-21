@@ -1,9 +1,11 @@
 package com.dians.deliverable.service;
 
 import com.dians.deliverable.models.Job;
+import com.dians.deliverable.payload.response.GetPathResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -31,18 +33,18 @@ public class RouteFinderService {
 
         List<List<List<Double>>> allPaths = new ArrayList<>();
         if (jobs.size() != 0) {
-            allPaths.add(getPath(startLon, startLat, jobs.get(0).getLon(), jobs.get(0).getLat(), jobs.get(0)));
+            allPaths.add(getPath(startLon, startLat, jobs.get(0).getLon(), jobs.get(0).getLat(), jobs.get(0)).getPath());
             for (int i = 0; i < jobs.size() - 1; i++) {
-                allPaths.add(getPath(jobs.get(i).getLon(), jobs.get(i).getLat(), jobs.get(i + 1).getLon(), jobs.get(i + 1).getLat(), jobs.get(i + 1)));
+                allPaths.add(getPath(jobs.get(i).getLon(), jobs.get(i).getLat(), jobs.get(i + 1).getLon(), jobs.get(i + 1).getLat(), jobs.get(i + 1)).getPath());
             }
-            allPaths.add(getPath(jobs.get(jobs.size() - 1).getLon(), jobs.get(jobs.size() - 1).getLat(), startLon, startLat, null));
+            allPaths.add(getPath(jobs.get(jobs.size() - 1).getLon(), jobs.get(jobs.size() - 1).getLat(), startLon, startLat, null).getPath());
 
         }
 
         return allPaths;
     }
 
-    public List<List<Double>> getPath(double lon1, double lat1, double lon2, double lat2, Job job) {
+    public GetPathResponse getPath(double lon1, double lat1, double lon2, double lat2, Job job) {
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest r = HttpRequest.newBuilder()
@@ -63,11 +65,12 @@ public class RouteFinderService {
         JSONObject geometry = features.getJSONObject(0).getJSONObject("geometry");
         JSONArray coordinates = geometry.getJSONArray("coordinates");
 
+        JSONObject properties = features.getJSONObject(0).getJSONObject("properties");
+        JSONObject segment = properties.getJSONArray("segments").getJSONObject(0);
+        double distance = segment.getDouble("distance");
+        double time = segment.getDouble("duration");
         if (job != null) {
             if (job.getDistance() == 0.0) {
-                JSONObject properties = features.getJSONObject(0).getJSONObject("properties");
-                JSONObject summary = properties.getJSONArray("segments").getJSONObject(0);
-                double distance = summary.getDouble("distance");
                 job.setDistance(distance);
                 jobService.save(job);
             }
@@ -84,6 +87,6 @@ public class RouteFinderService {
 
         path.add(Arrays.asList(lon2, lat2));
 
-        return path;
+        return new GetPathResponse(distance, time, path);
     }
 }

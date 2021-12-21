@@ -33,6 +33,7 @@ import { MatExpansionModule } from '@angular/material/expansion'
 import { ManagerMapComponent } from 'src/app/modules/manager-map/manager-map.component';
 import { MatSelectModule } from '@angular/material/select';
 import { DriverJobsComponent } from 'src/app/modules/driver-jobs/driver-jobs.component';
+import { ConfigurationComponent } from 'src/app/modules/configuration/configuration.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { DriverJobsComponent } from 'src/app/modules/driver-jobs/driver-jobs.com
     EditUserDialog,
     ManagerJobsComponent,
     ManagerMapComponent,
-    DriverJobsComponent
+    DriverJobsComponent,
+    ConfigurationComponent,
   ],
   imports: [
     CommonModule,

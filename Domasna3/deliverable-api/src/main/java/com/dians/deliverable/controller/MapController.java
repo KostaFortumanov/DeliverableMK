@@ -1,15 +1,9 @@
 package com.dians.deliverable.controller;
 
-import com.dians.deliverable.models.AppUser;
-import com.dians.deliverable.models.Job;
-import com.dians.deliverable.models.JobStatus;
-import com.dians.deliverable.models.Statistics;
+import com.dians.deliverable.models.*;
 import com.dians.deliverable.payload.request.UpdateCurrentPathRequest;
 import com.dians.deliverable.payload.response.JobResponse;
-import com.dians.deliverable.service.JobService;
-import com.dians.deliverable.service.RouteFinderService;
-import com.dians.deliverable.service.StatisticsService;
-import com.dians.deliverable.service.UserService;
+import com.dians.deliverable.service.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +21,14 @@ public class MapController {
     private final UserService userService;
     private final JobService jobService;
     private final StatisticsService statisticsService;
+    private final ConfigService configService;
 
-    public MapController(RouteFinderService routeFinderService, UserService userService, JobService jobService, StatisticsService statisticsService) {
+    public MapController(RouteFinderService routeFinderService, UserService userService, JobService jobService, StatisticsService statisticsService, ConfigService configService) {
         this.routeFinderService = routeFinderService;
         this.userService = userService;
         this.jobService = jobService;
         this.statisticsService = statisticsService;
+        this.configService = configService;
     }
 
     @GetMapping("/allPaths")
@@ -46,8 +42,9 @@ public class MapController {
                     .badRequest().body("");
         }
 
-        double startLon = 21.4443826;
-        double startLat = 41.994568;
+        Config config = configService.getConfig();
+        double startLon = config.getStartLon();
+        double startLat = config.getStartLat();
 
         return ResponseEntity
                 .ok(routeFinderService.getPaths(startLon, startLat, jobs));

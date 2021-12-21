@@ -45,10 +45,11 @@ export class DriverMapComponent implements OnInit, OnDestroy {
   currentLocationMarker: L.Marker = L.marker(L.GeoJSON.coordsToLatLng([0, 0]), {
     icon: this.myLocationIcon,
   });
+  info!: L.Control
+  distance: string = '0';
+  duration: number = 0;
 
-
-  
-  topic: string =  "/user/" + 12 + "/queue/messages";
+  topic: string = '/user/' + 12 + '/queue/messages';
   stompClient: any;
 
   private initMap(): void {
@@ -57,6 +58,14 @@ export class DriverMapComponent implements OnInit, OnDestroy {
       center: [41.9961, 21.4316],
       zoom: 13,
     });
+
+    let myLocationButton = L.easyButton(
+      '<i class="material-icons">my_location</i>',
+      (btn, map) => {
+        this.getLocation()
+      },
+      'Current location'
+    ).addTo(this.map);
 
     let trackButton = L.easyButton(
       '<i class="material-icons">navigation</i>',
@@ -70,7 +79,8 @@ export class DriverMapComponent implements OnInit, OnDestroy {
         );
         trackButton.remove();
         dontTrackButton.addTo(this.map);
-      },'Track movement'
+      },
+      'Track movement'
     ).addTo(this.map);
 
     let dontTrackButton = L.easyButton(
@@ -79,8 +89,24 @@ export class DriverMapComponent implements OnInit, OnDestroy {
         this.track = false;
         dontTrackButton.remove();
         trackButton.addTo(this.map);
-      },'Stop tracking movement'
+      },
+      'Stop tracking movement'
     );
+
+    this.info = new L.Control();
+
+    this.info.onAdd = (map) => {
+      let _div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+      
+      _div.innerHTML = this.duration == 0 && this.distance == '0' ? 'No info' :
+        `
+          <p><b>Duration: </b> ${this.duration < 60 ? '<1min' : new Date(this.duration * 1000).toISOString().substring(11, 16)+'min'}</p>
+          <p><b>Distance: </b> ${this.distance}km</p>
+        `
+      return _div;
+    };
+
+    this.info.addTo(this.map);
   }
 
   private tiles = L.tileLayer(
@@ -98,11 +124,11 @@ export class DriverMapComponent implements OnInit, OnDestroy {
   constructor(
     private driverMapService: DriverMapService,
     private tokenStorageService: TokenStorageService
-    ) {
-      let ws = new SockJS(webSocketEndPoint);
-      this.stompClient1 = Stomp.over(ws);
-      this.stompClient1.connect({});
-    }
+  ) {
+    let ws = new SockJS(webSocketEndPoint);
+    this.stompClient1 = Stomp.over(ws);
+    this.stompClient1.connect({});
+  }
 
   ngOnInit(): void {
     this.initMap();
@@ -160,45 +186,19 @@ export class DriverMapComponent implements OnInit, OnDestroy {
         let marker = L.marker(
           L.GeoJSON.coordsToLatLng(this.paths[i][this.paths[i].length - 1]),
           { icon: icon }
-        )
-        
-        if(i != this.paths.length -1) {
+        );
+
+        if (i != this.paths.length - 1) {
           marker.bindPopup(
             `<p>${this.jobs[i].id}</p><p>${this.jobs[i].address}</p><p>${this.jobs[i].description}</p>`
-            );
+          );
         }
 
         this.markers.push(marker);
       }
     }
 
-    this.navigation = navigator.geolocation.watchPosition(
-      (position) => {
-        console.log('navigator');
-        let lon = position.coords.longitude;
-        let lat = position.coords.latitude;
-
-        if (
-          this.currentLocationMarker.getLatLng().lng !== lon &&
-          this.currentLocationMarker.getLatLng().lat !== lat
-        ) {
-          this.currentLocationMarker.removeFrom(this.map);
-          this.currentLocationMarker = L.marker(
-            [position.coords.latitude, position.coords.longitude],
-            { icon: this.myLocationIcon }
-          );
-          this.currentLocationMarker.addTo(this.map);
-          if (this.track) {
-            this.map.panTo(new L.LatLng(lat, lon));
-          }
-          this.updateCurrentPath(lon, lat);
-        }
-      },
-      (error) => {
-        console.log('error');
-      },
-      options
-    );
+    
 
     this.drawMap();
   }
@@ -224,36 +224,49 @@ export class DriverMapComponent implements OnInit, OnDestroy {
       this.driverMapService
         .updateCurrentPath(lon, lat, destination[0], destination[1])
         .subscribe((data) => {
-          console.log('refresh');
+          this.distance = (data.distance / 1000).toFixed(2);
+          this.duration = data.time;
           this.polylines[0].removeFrom(this.map);
-          this.polylines[0] = L.polyline(L.GeoJSON.coordsToLatLngs(data), {
+          this.info.remove();
+          this.info.addTo(this.map);
+          this.polylines[0] = L.polyline(L.GeoJSON.coordsToLatLngs(data.path), {
             color: 'red',
           });
           this.polylines[0].addTo(this.map);
 
           let user = this.tokenStorageService.getUser();
 
-          this.stompClient1.send("/app/manager/map", {}, 
-          JSON.stringify({
-            id: user.id,
-            name: user.firstName + ' ' + user.lastName,
-            currentLon: lon,
-            currentLat: lat,
-            destinationLon: destination[0],
-            destinationLat: destination[1],
-            job: this.jobs[0]
-          }))
+          this.stompClient1.send(
+            '/app/manager/map',
+            {},
+            JSON.stringify({
+              id: user.id,
+              name: user.firstName + ' ' + user.lastName,
+              currentLon: lon,
+              currentLat: lat,
+              destinationLon: destination[0],
+              destinationLat: destination[1],
+              job: this.jobs[0],
+            })
+          );
         });
     }
   }
 
   finishJob() {
-
     this.driverMapService.finishJob(this.jobs[0].id).subscribe((data) => {
-      
       let user = this.tokenStorageService.getUser();
-      let message = user.firstName + ' ' + user.lastName + ' finished job ' + this.jobs[0].id;
-      this.stompClient1.send("/app/manager/finishJob", {}, JSON.stringify(message));
+      let message =
+        user.firstName +
+        ' ' +
+        user.lastName +
+        ' finished job ' +
+        this.jobs[0].id;
+      this.stompClient1.send(
+        '/app/manager/finishJob',
+        {},
+        JSON.stringify(message)
+      );
 
       this.jobs.shift();
       this.polylines[0].removeFrom(this.map);
@@ -262,7 +275,9 @@ export class DriverMapComponent implements OnInit, OnDestroy {
       this.markers.shift();
       this.paths.shift();
       window.sessionStorage.removeItem('paths');
-      window.sessionStorage.setItem('paths', JSON.stringify(this.paths));
+      if(this.jobs.length > 0) {
+        window.sessionStorage.setItem('paths', JSON.stringify(this.paths));
+      }
 
       this.drawMap();
       this.updateCurrentPath(
@@ -294,6 +309,46 @@ export class DriverMapComponent implements OnInit, OnDestroy {
     }
 
     // this.currentLocationMarker.addTo(this.map);
+  }
+
+  getLocation() {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.getLocationSucces(position)
+        this.navigation = navigator.geolocation.watchPosition(
+          (position) => {
+            this.getLocationSucces(position);
+          },
+          (error) => {
+            console.log('error');
+          },
+          options
+        );
+    }, () => {
+
+    }, options)
+  }
+
+  getLocationSucces(position: any) {
+    console.log('navigator');
+    let lon = position.coords.longitude;
+    let lat = position.coords.latitude;
+
+    if (
+      this.currentLocationMarker.getLatLng().lng !== lon &&
+      this.currentLocationMarker.getLatLng().lat !== lat
+    ) {
+      this.currentLocationMarker.removeFrom(this.map);
+      this.currentLocationMarker = L.marker(
+        [position.coords.latitude, position.coords.longitude],
+        { icon: this.myLocationIcon }
+      );
+      this.currentLocationMarker.addTo(this.map);
+      if (this.track) {
+        this.map.panTo(new L.LatLng(lat, lon));
+      }
+      this.updateCurrentPath(lon, lat);
+    }
   }
 
   ngOnDestroy() {

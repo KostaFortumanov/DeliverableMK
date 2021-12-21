@@ -130,7 +130,7 @@ export class ManagerMapComponent implements OnInit, OnDestroy {
               .subscribe((data) => {
                 this.polylines[i].removeFrom(this.managerMap);
                 this.polylines[i] = L.polyline(
-                  L.GeoJSON.coordsToLatLngs(data),
+                  L.GeoJSON.coordsToLatLngs(data.path),
                   {
                     color: 'red',
                   }
@@ -190,7 +190,7 @@ export class ManagerMapComponent implements OnInit, OnDestroy {
               message.destinationLat
             )
             .subscribe((data) => {
-              let polyline = L.polyline(L.GeoJSON.coordsToLatLngs(data), {
+              let polyline = L.polyline(L.GeoJSON.coordsToLatLngs(data.path), {
                 color: 'red',
               });
               this.polylines.push(polyline);

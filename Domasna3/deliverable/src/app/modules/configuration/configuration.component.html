@@ -1,0 +1,31 @@
+<h2>Work time</h2>
+<div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+    <mat-form-field appearance="fill">
+        <mat-label>Од</mat-label>
+        <input matInput [(ngModel)]="startTime" type="time">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>До</mat-label>
+        <input matInput [(ngModel)]="endTime" type="time">
+    </mat-form-field>
+</div>
+<mat-divider></mat-divider>
+<br/>
+<h2>Start location</h2>
+<div class="map-container">
+    <div class="map-frame">
+      <div id="configMap">
+      </div>
+    </div>
+</div>
+<br/>
+<span class="button-container">
+    <div class="spinner-container" *ngIf="loading">
+        <mat-spinner diameter="24"></mat-spinner>
+    </div>
+
+    <button [disabled]="loading" mat-raised-button color="primary" (click)="changeSettings()">
+        Change settings
+    </button>
+    <p style="color: green; display: inline;" *ngIf="success">{{success}}</p>
+</span>

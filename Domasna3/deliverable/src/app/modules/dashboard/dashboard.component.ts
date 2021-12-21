@@ -22,7 +22,6 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  cards: Object[] = [];
   role: string;
   data!: Object[];
   constructor(

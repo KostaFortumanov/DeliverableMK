@@ -2,6 +2,7 @@ package com.dians.deliverable.service;
 
 import com.dians.deliverable.exceptions.NoJobsException;
 import com.dians.deliverable.models.AppUser;
+import com.dians.deliverable.models.Config;
 import com.dians.deliverable.models.Job;
 import com.dians.deliverable.models.JobStatus;
 import com.dians.deliverable.payload.vroom.VroomRequest;
@@ -31,10 +32,12 @@ public class OptimizationService {
 
     private final JobService jobService;
     private final UserService userService;
+    private final ConfigService configService;
 
-    public OptimizationService(JobService jobService, UserService userService) {
+    public OptimizationService(JobService jobService, UserService userService, ConfigService configService) {
         this.jobService = jobService;
         this.userService = userService;
+        this.configService = configService;
     }
 
     public String getVroomResponse(List<Long> driverIds) throws PortUnreachableException, NoJobsException {
@@ -77,8 +80,9 @@ public class OptimizationService {
 
         unassignedJobs.forEach(job -> vroomRequest.addJob(job.getId(), job.getLon(), job.getLat()));
 
-        double startLon = 21.4443826;
-        double startLat = 41.994568;
+        Config config = configService.getConfig();
+        double startLon = config.getStartLon();
+        double startLat = config.getStartLat();
         driverIds.forEach(driverId -> {
             AppUser driver = userService.getById(driverId);
             if(driver.getCurrentJobs().size() == 0) {
@@ -87,7 +91,10 @@ public class OptimizationService {
         });
 
         int capacity = (int) Math.ceil(1f * unassignedJobs.size() / vroomRequest.getVehicles().size());
-        vroomRequest.getVehicles().forEach(vehicle -> vehicle.setCapacity(new int[]{capacity}));
+        vroomRequest.getVehicles().forEach(vehicle -> {
+            vehicle.setCapacity(new int[]{capacity});
+            vehicle.setTime_window(new int[]{config.getStartTime().toSecondOfDay()+3600, config.getEndTime().toSecondOfDay()-3600});
+        });
         vroomRequest.getJobs().forEach(job -> job.setAmount(new int[]{1}));
 
         return vroomRequest;

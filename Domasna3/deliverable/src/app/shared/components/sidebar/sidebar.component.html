@@ -24,4 +24,6 @@
 
     <mat-divider></mat-divider>
 
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/config" *ngIf="role== 'MANAGER'"><mat-icon>settings</mat-icon>&nbsp;Configuration</a>
+
 </mat-nav-list>

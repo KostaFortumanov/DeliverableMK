@@ -13,7 +13,6 @@ import { RouterModule } from '@angular/router';
 import { MatBadgeModule } from '@angular/material/badge';
 
 import { AreaComponent } from './widgets/area/area.component';
-import { CardComponent } from './widgets/card/card.component';
 
 import { HeaderComponent } from './components/header/header.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -25,7 +24,6 @@ import { FormsModule } from '@angular/forms';
     HeaderComponent,
     SidebarComponent,
     AreaComponent,
-    CardComponent,
   ],
   imports: [
     CommonModule,
@@ -43,6 +41,6 @@ import { FormsModule } from '@angular/forms';
     MatSelectModule,
     FormsModule
   ],
-  exports: [HeaderComponent, SidebarComponent, AreaComponent, CardComponent],
+  exports: [HeaderComponent, SidebarComponent, AreaComponent],
 })
 export class SharedModule {}
