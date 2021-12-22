@@ -58,8 +58,6 @@ public class RouteFinderService {
             e.printStackTrace();
         }
 
-        System.out.println(response.body().toString());
-
         JSONObject json = new JSONObject(response.body().toString());
         JSONArray features = json.getJSONArray("features");
         JSONObject geometry = features.getJSONObject(0).getJSONObject("geometry");

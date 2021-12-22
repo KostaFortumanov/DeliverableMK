@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
-@CrossOrigin(origins = "${frontUrl}", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class MessageController {
 
     private final SimpMessagingTemplate messagingTemplate;
@@ -31,7 +31,6 @@ public class MessageController {
 
     @MessageMapping("/manager/map")
     public void userPath(@Payload ManagerMapRequest request) {
-        System.out.println(request.getName());
         messagingTemplate.convertAndSendToUser("managerMap","/queue/messages", request);
     }
 }

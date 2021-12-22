@@ -25,8 +25,20 @@ export interface NumJobs {
   styleUrls: ['./area.component.scss'],
 })
 export class AreaComponent implements OnInit {
-
-  months = [{value:1, name: 'January'}, {value:2, name: 'February'}, {value:3, name: 'March'}, {value:4, name: 'April'}, {value:5, name: 'May'}, {value:6, name: 'June'}, {value:7, name: 'July'}, {value:8, name: 'August'}, {value:9, name: 'September'}, {value:10, name: 'October'}, {value:11, name: 'November'}, {value:12, name: 'December'}]
+  months = [
+    { value: 1, name: 'January' },
+    { value: 2, name: 'February' },
+    { value: 3, name: 'March' },
+    { value: 4, name: 'April' },
+    { value: 5, name: 'May' },
+    { value: 6, name: 'June' },
+    { value: 7, name: 'July' },
+    { value: 8, name: 'August' },
+    { value: 9, name: 'September' },
+    { value: 10, name: 'October' },
+    { value: 11, name: 'November' },
+    { value: 12, name: 'December' },
+  ];
 
   chartOptions!: any;
   selected: any;
@@ -45,7 +57,6 @@ export class AreaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     let month = new Date().getMonth() + 1;
     this.selected = month;
 
@@ -67,14 +78,13 @@ export class AreaComponent implements OnInit {
   }
 
   init(data: any) {
-    console.log(data);
     for (let day of data) {
-      this.distance.data.push(parseFloat(day.distance.toFixed(2)));
-      this.fuel.data.push(parseFloat(day.fuel.toFixed(2)));
+      this.distance.data.push(Math.round(day.distance * 100) / 100);
+      this.fuel.data.push(Math.round(day.fuel * 100) / 100);
       this.numJobs.data.push(day.numJobs);
     }
     this.data = [this.distance, this.fuel, this.numJobs];
-    console.log(this.data);
+
     this.chartOptions = {
       chart: {
         type: 'area',
@@ -87,12 +97,44 @@ export class AreaComponent implements OnInit {
         valueSuffix: '',
       },
       xAxis: {
-        categories: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
+        categories: [
+          '1',
+          '2',
+          '3',
+          '4',
+          '5',
+          '6',
+          '7',
+          '8',
+          '9',
+          '10',
+          '11',
+          '12',
+          '13',
+          '14',
+          '15',
+          '16',
+          '17',
+          '18',
+          '19',
+          '20',
+          '21',
+          '22',
+          '23',
+          '24',
+          '25',
+          '26',
+          '27',
+          '28',
+          '29',
+          '30',
+          '31',
+        ],
         tickmarkPlacement: 'on',
         title: {
-            enabled: false
-        }
-    },
+          enabled: false,
+        },
+      },
       credits: {
         enabled: false,
       },
@@ -105,33 +147,36 @@ export class AreaComponent implements OnInit {
 
   updateFlag = false;
   handleUpdate() {
-
     this.distance.data = [];
     this.fuel.data = [];
     this.numJobs.data = [];
-    
+
     if (this.role === 'DRIVER') {
-      this.dashboardService.getDriverDashboard(this.selected).subscribe((data) => {
-        for (let day of data) {
-          this.distance.data.push(day.distance);
-          this.fuel.data.push(day.fuel);
-          this.numJobs.data.push(day.numJobs);
-        }
-        this.data = [this.distance, this.fuel, this.numJobs];
-        this.chartOptions.series = this.data;
-        this.updateFlag = true;
-      });
+      this.dashboardService
+        .getDriverDashboard(this.selected)
+        .subscribe((data) => {
+          for (let day of data) {
+            this.distance.data.push(day.distance);
+            this.fuel.data.push(day.fuel);
+            this.numJobs.data.push(day.numJobs);
+          }
+          this.data = [this.distance, this.fuel, this.numJobs];
+          this.chartOptions.series = this.data;
+          this.updateFlag = true;
+        });
     } else {
-      this.dashboardService.getManagerDashboard(this.selected).subscribe((data) => {
-        for (let day of data) {
-          this.distance.data.push(day.distance);
-          this.fuel.data.push(day.fuel);
-          this.numJobs.data.push(day.numJobs);
-        }
-        this.data = [this.distance, this.fuel, this.numJobs];
-        this.chartOptions.series = this.data;
-        this.updateFlag = true;
-      });
+      this.dashboardService
+        .getManagerDashboard(this.selected)
+        .subscribe((data) => {
+          for (let day of data) {
+            this.distance.data.push(day.distance);
+            this.fuel.data.push(day.fuel);
+            this.numJobs.data.push(day.numJobs);
+          }
+          this.data = [this.distance, this.fuel, this.numJobs];
+          this.chartOptions.series = this.data;
+          this.updateFlag = true;
+        });
     }
   }
 }

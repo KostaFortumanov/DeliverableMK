@@ -3,17 +3,20 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node server.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "heroku-postbuild": "ng build --prod"
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "~12.2.0",
     "@angular/cdk": "^12.2.13",
+    "@angular/cli": "~12.2.12",
     "@angular/common": "~12.2.0",
     "@angular/compiler": "~12.2.0",
+    "@angular/compiler-cli": "~12.2.0",
     "@angular/core": "~12.2.0",
     "@angular/flex-layout": "^12.0.0-beta.35",
     "@angular/forms": "~12.2.0",
@@ -21,18 +24,21 @@
     "@angular/platform-browser": "~12.2.0",
     "@angular/platform-browser-dynamic": "~12.2.0",
     "@angular/router": "~12.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
     "highcharts": "^9.3.2",
     "highcharts-angular": "^2.10.0",
     "leaflet": "^1.7.1",
     "leaflet-easybutton": "^2.4.0",
     "leaflet-fullscreen": "^1.0.2",
-    "moment": "^2.29.1",
     "net": "^1.0.2",
+    "path": "^0.12.7",
     "rxjs": "~6.6.0",
     "stomp-client": "^0.9.0",
     "stompjs": "^2.3.3",
     "tslib": "^2.3.0",
-    "zone.js": "~0.11.4"
+    "zone.js": "~0.11.4",
+    "typescript": "~4.3.5"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.2.12",

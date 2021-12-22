@@ -28,7 +28,8 @@
             <div>
                 <mat-form-field appearance="fill">
                     <mat-label>Enter phonenumber</mat-label>
-                    <input matInput formControlName="phoneNumber" [ngClass]="{ 'is-invalid': submitted && f.phoneNumber.errors }" />
+                    <input matInput formControlName="phoneNumber"
+                        [ngClass]="{ 'is-invalid': submitted && f.phoneNumber.errors }" />
                     <mat-error *ngIf="submitted && f.phoneNumber.errors">Phonenumber is required</mat-error>
                 </mat-form-field>
             </div>

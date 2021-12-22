@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = "${frontUrl}", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -47,7 +47,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginRequest.getUsername(),
+                loginRequest.getUsername().toLowerCase().trim(),
                 loginRequest.getPassword()
         ));
 
@@ -67,7 +67,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
-        if(userService.existsByEmail(registerRequest.getEmail())) {
+        if(userService.existsByEmail(registerRequest.getEmail().toLowerCase().trim())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use"));
@@ -80,7 +80,7 @@ public class AuthController {
         }
 
         AppUser user = new AppUser();
-        user.setEmail(registerRequest.getEmail());
+        user.setEmail(registerRequest.getEmail().toLowerCase().trim());
         user.setFirstName(registerRequest.getFirstName());
         user.setLastName(registerRequest.getLastName());
         user.setPhoneNumber(registerRequest.getPhoneNumber());

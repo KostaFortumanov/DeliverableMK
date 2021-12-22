@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { finalize } from 'rxjs/operators';
 import { DashboardService } from 'src/app/services/dashboard.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 
@@ -17,7 +18,11 @@ export interface Driver {
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-  displayedColumns: string[] = ['position', 'name', 'deliveries', 'fuel'];
+  show = false;
+  pageLoading = true;
+  error = '';
+
+  displayedColumns: string[] = ['name', 'distance', 'fuel', 'deliveries'];
   dataSource!: MatTableDataSource<Driver>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -32,23 +37,47 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    if(this.role == 'DRIVER') {
-    this.dashboardService.getDriverTotal().subscribe(
-      (data) => {
-        this.dataSource = new MatTableDataSource<Driver>(data);
-      }
-    )
+    if (this.role == 'DRIVER') {
+      this.dashboardService
+        .getDriverTotal()
+        .pipe(
+          finalize(() => {
+            this.pageLoading = false;
+            this.show = true;
+            setTimeout(() => {
+              this.dataSource.paginator = this.paginator;
+            }, 100);
+          })
+        )
+        .subscribe(
+          (data) => {
+            this.dataSource = new MatTableDataSource<Driver>(data);
+          },
+          (error) => {
+            this.error = 'Server unavailable';
+          }
+        );
     } else {
-      this.dashboardService.getManagerTotal().subscribe(
-        (data) => {
-          this.dataSource = new MatTableDataSource<Driver>(data);
-        }
-      )
+      this.dashboardService
+        .getManagerTotal()
+        .pipe(
+          finalize(() => {
+            this.pageLoading = false;
+            this.show = true;
+            setTimeout(() => {
+              this.dataSource.paginator = this.paginator;
+            }, 100);
+          })
+        )
+        .subscribe(
+          (data) => {
+            this.dataSource = new MatTableDataSource<Driver>(data);
+            this.dataSource.paginator = this.paginator;
+          },
+          (error) => {
+            this.error = 'Server unavailable';
+          }
+        );
     }
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
   }
 }

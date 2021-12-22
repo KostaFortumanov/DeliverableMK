@@ -45,7 +45,7 @@ export class DriverMapComponent implements OnInit, OnDestroy {
   currentLocationMarker: L.Marker = L.marker(L.GeoJSON.coordsToLatLng([0, 0]), {
     icon: this.myLocationIcon,
   });
-  info!: L.Control
+  info!: L.Control;
   distance: string = '0';
   duration: number = 0;
 
@@ -62,7 +62,7 @@ export class DriverMapComponent implements OnInit, OnDestroy {
     let myLocationButton = L.easyButton(
       '<i class="material-icons">my_location</i>',
       (btn, map) => {
-        this.getLocation()
+        this.getLocation();
       },
       'Current location'
     ).addTo(this.map);
@@ -97,12 +97,19 @@ export class DriverMapComponent implements OnInit, OnDestroy {
 
     this.info.onAdd = (map) => {
       let _div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
-      
-      _div.innerHTML = this.duration == 0 && this.distance == '0' ? 'No info' :
-        `
-          <p><b>Duration: </b> ${this.duration < 60 ? '<1min' : new Date(this.duration * 1000).toISOString().substring(11, 16)+'min'}</p>
+
+      _div.innerHTML =
+        this.duration == 0 && this.distance == '0'
+          ? 'No info'
+          : `
+          <p><b>Duration: </b> ${
+            this.duration < 60
+              ? '<1min'
+              : new Date(this.duration * 1000).toISOString().substring(11, 16) +
+                'min'
+          }</p>
           <p><b>Distance: </b> ${this.distance}km</p>
-        `
+        `;
       return _div;
     };
 
@@ -127,6 +134,7 @@ export class DriverMapComponent implements OnInit, OnDestroy {
   ) {
     let ws = new SockJS(webSocketEndPoint);
     this.stompClient1 = Stomp.over(ws);
+    this.stompClient1.debug = () => {};
     this.stompClient1.connect({});
   }
 
@@ -140,7 +148,7 @@ export class DriverMapComponent implements OnInit, OnDestroy {
     if (paths) {
       this.paths = JSON.parse(paths);
       this.show = this.paths.length;
-      console.log('if');
+
       this.getJobInfo();
     } else {
       this.driverMapService
@@ -152,10 +160,9 @@ export class DriverMapComponent implements OnInit, OnDestroy {
         )
         .subscribe(
           (data) => {
-            console.log('else');
             this.paths = data;
             this.show = this.paths.length;
-            console.log(this.show);
+
             window.sessionStorage.setItem('paths', JSON.stringify(this.paths));
           },
           (error) => {}
@@ -198,8 +205,6 @@ export class DriverMapComponent implements OnInit, OnDestroy {
       }
     }
 
-    
-
     this.drawMap();
   }
 
@@ -219,6 +224,10 @@ export class DriverMapComponent implements OnInit, OnDestroy {
   }
 
   updateCurrentPath(lon: number, lat: number) {
+    setTimeout(() => {
+      this.updated = false;
+    }, 3000);
+
     if (this.paths) {
       let destination = this.paths[0][this.paths[0].length - 1];
       this.driverMapService
@@ -275,7 +284,7 @@ export class DriverMapComponent implements OnInit, OnDestroy {
       this.markers.shift();
       this.paths.shift();
       window.sessionStorage.removeItem('paths');
-      if(this.jobs.length > 0) {
+      if (this.jobs.length > 0) {
         window.sessionStorage.setItem('paths', JSON.stringify(this.paths));
       }
 
@@ -314,23 +323,26 @@ export class DriverMapComponent implements OnInit, OnDestroy {
   getLocation() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        this.getLocationSucces(position)
+        this.map.panTo(
+          new L.LatLng(position.coords.latitude, position.coords.longitude)
+        );
+        this.getLocationSucces(position);
         this.navigation = navigator.geolocation.watchPosition(
           (position) => {
             this.getLocationSucces(position);
           },
-          (error) => {
-            console.log('error');
-          },
+          (error) => {},
           options
         );
-    }, () => {
-
-    }, options)
+      },
+      () => {},
+      options
+    );
   }
 
+  updated = false;
+
   getLocationSucces(position: any) {
-    console.log('navigator');
     let lon = position.coords.longitude;
     let lat = position.coords.latitude;
 
@@ -338,16 +350,19 @@ export class DriverMapComponent implements OnInit, OnDestroy {
       this.currentLocationMarker.getLatLng().lng !== lon &&
       this.currentLocationMarker.getLatLng().lat !== lat
     ) {
-      this.currentLocationMarker.removeFrom(this.map);
-      this.currentLocationMarker = L.marker(
-        [position.coords.latitude, position.coords.longitude],
-        { icon: this.myLocationIcon }
-      );
-      this.currentLocationMarker.addTo(this.map);
-      if (this.track) {
-        this.map.panTo(new L.LatLng(lat, lon));
+      if (!this.updated) {
+        this.updated = true;
+        this.currentLocationMarker.removeFrom(this.map);
+        this.currentLocationMarker = L.marker(
+          [position.coords.latitude, position.coords.longitude],
+          { icon: this.myLocationIcon }
+        );
+        this.currentLocationMarker.addTo(this.map);
+        if (this.track) {
+          this.map.panTo(new L.LatLng(lat, lon));
+        }
+        this.updateCurrentPath(lon, lat);
       }
-      this.updateCurrentPath(lon, lat);
     }
   }
 

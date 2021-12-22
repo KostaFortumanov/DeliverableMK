@@ -4,7 +4,7 @@
 <div *ngIf="show">
     <mat-error style="display: inline;" *ngIf="error"> {{error}}</mat-error>
     <div *ngIf="!error">
-        <mat-tab-group >
+        <mat-tab-group>
             <mat-tab label="Not assigned">
                 <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="20px" style="margin: 10px 10px 10px 10px;">
                     <mat-card style="width: 400px;">
@@ -74,22 +74,22 @@
                             <input matInput type="text" [(ngModel)]='searchCompleted' />
                         </mat-form-field>
                     </div>
-                        <mat-expansion-panel hideToggle *ngFor="let job of filterCompleted()">
-                            <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                    {{ job.id }}
-                                </mat-panel-title>
-                                <mat-panel-description>
-                                    {{ job.address }}
-                                </mat-panel-description>
-                            </mat-expansion-panel-header>
-                            <p>{{ job.description.split("Опис")[0] }}</p>
-                            <p>Опис {{ job.description.split("Опис")[1] }}</p>
-                            <p>Driver: {{ job.driver }}</p>
-                        </mat-expansion-panel>
+                    <mat-expansion-panel hideToggle *ngFor="let job of filterCompleted()">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ job.id }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ job.address }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <p>{{ job.description.split("Опис")[0] }}</p>
+                        <p>Опис {{ job.description.split("Опис")[1] }}</p>
+                        <p>Driver: {{ job.driver }}</p>
+                    </mat-expansion-panel>
                 </mat-accordion>
             </mat-tab>
         </mat-tab-group>
     </div>
-    <br/>
+    <br />
 </div>

@@ -20,11 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [
-    HeaderComponent,
-    SidebarComponent,
-    AreaComponent,
-  ],
+  declarations: [HeaderComponent, SidebarComponent, AreaComponent],
   imports: [
     CommonModule,
     MatToolbarModule,
@@ -39,7 +35,7 @@ import { FormsModule } from '@angular/forms';
     ScrollingModule,
     MatBadgeModule,
     MatSelectModule,
-    FormsModule
+    FormsModule,
   ],
   exports: [HeaderComponent, SidebarComponent, AreaComponent],
 })

@@ -12,17 +12,16 @@ export interface Job {
 @Component({
   selector: 'app-driver-jobs',
   templateUrl: './driver-jobs.component.html',
-  styleUrls: ['./driver-jobs.component.scss']
+  styleUrls: ['./driver-jobs.component.scss'],
 })
 export class DriverJobsComponent implements OnInit {
-
   show = false;
   pageLoading = true;
   error = '';
   searchAssigned = '';
   searchCompleted = '';
 
-  constructor(private jobService: JobService) { }
+  constructor(private jobService: JobService) {}
 
   assigned: Job[] = [];
   completed: Job[] = [];

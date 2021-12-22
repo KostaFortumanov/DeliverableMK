@@ -7,7 +7,6 @@ import {
 import { SelectDriverService } from 'src/app/services/select-driver.service';
 import { finalize } from 'rxjs/operators';
 import { JobService } from 'src/app/services/job.service';
-import { pipe } from 'rxjs';
 
 export interface SelectDriver {
   id: number;
@@ -80,25 +79,24 @@ export class SelectDriversComponent implements OnInit {
 
   getDrivers() {
     this.selectDriverService
-    .getDrivers()
-    .pipe(
-      finalize(() => {
-        this.pageLoading = false;
-        this.show = true;
-      })
-    )
-    .subscribe(
-      (data) => {
-        this.drivers = data;
-      },
-      (error) => {
-        this.pageLoadError = 'Could not get drivers';
-      }
-    );
+      .getDrivers()
+      .pipe(
+        finalize(() => {
+          this.pageLoading = false;
+          this.show = true;
+        })
+      )
+      .subscribe(
+        (data) => {
+          this.drivers = data;
+        },
+        (error) => {
+          this.pageLoadError = 'Could not get drivers';
+        }
+      );
   }
 
   assignJobs() {
-    console.log(this.selected);
     let payload: number[] = [];
     this.selected.forEach((driver) => payload.push(driver.id));
     this.loading = true;
@@ -140,7 +138,6 @@ export class SelectDriversComponent implements OnInit {
         )
         .subscribe(
           (data) => {
-            console.log(data);
             this.noSelection = false;
             this.timePreview = data;
             this.detailDrivers = data.drivers;
@@ -148,7 +145,6 @@ export class SelectDriversComponent implements OnInit {
             this.error = '';
           },
           (error) => {
-            console.log(error)
             this.noSelection = true;
             this.error = error.error.message;
           }
@@ -174,6 +170,5 @@ export class SelectDriversComponent implements OnInit {
       );
       this.preview();
     }
-
   }
 }

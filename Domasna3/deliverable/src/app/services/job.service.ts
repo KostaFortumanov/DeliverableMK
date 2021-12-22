@@ -10,27 +10,31 @@ const httpOptions = {
 };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class JobService {
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  addJob(city: string, street: string, number: string, description: string): Observable<any> {
+  addJob(
+    city: string,
+    street: string,
+    number: string,
+    description: string
+  ): Observable<any> {
     return this.http.post(
       API + '/jobs/addJob',
       {
         city,
         street,
         number,
-        description
+        description,
       },
       httpOptions
-    )
+    );
   }
 
   assignJobs(driverIds: number[]): Observable<any> {
-    return this.http.post(API + '/jobs/assignJobs', driverIds)
+    return this.http.post(API + '/jobs/assignJobs', driverIds);
   }
 
   getPreview(driverIds: number[]): Observable<any> {

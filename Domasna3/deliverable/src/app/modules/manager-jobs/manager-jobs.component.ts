@@ -39,7 +39,6 @@ export class ManagerJobsComponent implements OnInit {
       let all = job.id + ' ' + job.address + ' ' + job.description + job.driver;
       return all.toLowerCase().includes(this.searchNotAssigned.toLowerCase());
     });
-
   }
 
   filterAssigned() {

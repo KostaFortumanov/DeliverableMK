@@ -26,7 +26,13 @@ export class AuthenticationService {
     );
   }
 
-  register(firstName: string, lastName: string, email: string, phoneNumber: string, userRole: string): Observable<any> {
+  register(
+    firstName: string,
+    lastName: string,
+    email: string,
+    phoneNumber: string,
+    userRole: string
+  ): Observable<any> {
     return this.http.post(
       AUTH_API + '/auth/register',
       {
@@ -40,7 +46,11 @@ export class AuthenticationService {
     );
   }
 
-  newAccount(token: string, password: string, repeatPassword: string): Observable<any> {
+  newAccount(
+    token: string,
+    password: string,
+    repeatPassword: string
+  ): Observable<any> {
     return this.http.post(
       AUTH_API + '/auth/newAccount',
       {

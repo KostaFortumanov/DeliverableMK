@@ -1,32 +1,30 @@
+#configMap {
+  height: 50vh;
+}
 
-  
-  #configMap {
-    height: 50vh;
-  }
+.mat-form-field {
+  width: 100%;
+}
 
-  .mat-form-field {
-    width: 100%;
-  }
-  
-  mat-card-title,
-  mat-card-content {
-    display: flex;
-    justify-content: center;
-  }
+mat-card-title,
+mat-card-content {
+  display: flex;
+  justify-content: center;
+}
 
-  .button-container {
-    display: inline-block;
-    position: relative;
-  }
+.button-container {
+  display: inline-block;
+  position: relative;
+}
 
-  .spinner-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.spinner-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

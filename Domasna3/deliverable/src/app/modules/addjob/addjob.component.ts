@@ -95,11 +95,9 @@ export class AddjobComponent implements OnInit {
   getCities() {
     this.addressService.getCities().subscribe(
       (data) => {
-        console.log(data);
         this.cities = data;
       },
       (error) => {
-        console.log(error);
         this.streets = [];
         this.numbers = [];
       }
@@ -109,12 +107,10 @@ export class AddjobComponent implements OnInit {
   getStreets(cityName: string) {
     this.addressService.getStreets(cityName).subscribe(
       (data) => {
-        console.log(data);
         this.streets = data;
         this.addJobError = '';
       },
       (error) => {
-        console.log(error);
         this.streets = [];
         this.numbers = [];
         this.addJobError = error.error.message;
@@ -126,12 +122,10 @@ export class AddjobComponent implements OnInit {
     if (streetName) {
       this.addressService.getNumbers(cityName, streetName).subscribe(
         (data) => {
-          console.log(data);
           this.numbers = data;
           this.addJobError = '';
         },
         (error) => {
-          console.log(error);
           this.numbers = [];
           this.addJobError = error.error.message;
         }

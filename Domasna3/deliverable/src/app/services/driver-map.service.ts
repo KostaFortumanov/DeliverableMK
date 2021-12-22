@@ -35,13 +35,13 @@ export class DriverMapService {
         lon,
         lat,
         destinationLon,
-        destinationLat
+        destinationLat,
       },
       httpOptions
     );
   }
 
   finishJob(id: number): Observable<any> {
-    return this.http.get(API + "/map/finishJob");
+    return this.http.get(API + '/map/finishJob');
   }
 }

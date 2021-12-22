@@ -25,12 +25,15 @@ export class ConfigurationService {
     startLat: any,
     startLon: any
   ): Observable<any> {
-    return this.http.post(API + '/config', 
-    {
-      startTime,
-      endTime, 
-      startLat,
-      startLon
-    }, httpOptions);
+    return this.http.post(
+      API + '/config',
+      {
+        startTime,
+        endTime,
+        startLat,
+        startLon,
+      },
+      httpOptions
+    );
   }
 }

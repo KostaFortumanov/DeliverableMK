@@ -6,14 +6,12 @@ import { environment } from 'src/environments/environment';
 const API = environment.apiUrl;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SelectDriverService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getDrivers(): Observable<any> {
-    return this.http.get(API + '/drivers/selectDrivers')
+    return this.http.get(API + '/drivers/selectDrivers');
   }
-
 }

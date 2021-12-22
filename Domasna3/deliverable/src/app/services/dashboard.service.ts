@@ -12,11 +12,11 @@ export class DashboardService {
   constructor(private http: HttpClient) {}
 
   getDriverDashboard(month: number): Observable<any> {
-    return this.http.get(API + "/dashboard/driver/" + month);
+    return this.http.get(API + '/dashboard/driver/' + month);
   }
 
-  getManagerDashboard(month: number): Observable<any>  {
-    return this.http.get(API + "/dashboard/manager/" + month);
+  getManagerDashboard(month: number): Observable<any> {
+    return this.http.get(API + '/dashboard/manager/' + month);
   }
 
   getDriverTotal(): Observable<any> {

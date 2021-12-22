@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "${frontUrl}", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/dashboard")
 public class DashboardController {
 
@@ -84,7 +84,7 @@ public class DashboardController {
 
         Map<String, TotalDashboardResponse> map = new HashMap<>();
         for(Statistics statistic: statistics) {
-            String name = statistic.getUser().getFirstName() + " " + statistic.getUser().getFirstName() ;
+            String name = statistic.getUser().getFirstName() + " " + statistic.getUser().getLastName();
             map.computeIfAbsent(name, value -> new TotalDashboardResponse(name));
             double distance = map.get(name).getDistance();
             double fuel = map.get(name).getFuel();
@@ -105,7 +105,7 @@ public class DashboardController {
 
         Map<String, TotalDashboardResponse> map = new HashMap<>();
         for(Statistics statistic: statistics) {
-            String name = statistic.getUser().getFirstName() + " " + statistic.getUser().getFirstName() ;
+            String name = statistic.getUser() == null ? "user" : statistic.getUser().getFirstName() + " " + statistic.getUser().getLastName();
             map.computeIfAbsent(name, value -> new TotalDashboardResponse(name));
             double distance = map.get(name).getDistance();
             double fuel = map.get(name).getFuel();

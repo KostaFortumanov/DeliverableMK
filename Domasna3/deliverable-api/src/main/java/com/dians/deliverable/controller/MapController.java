@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "${frontUrl}", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/map")
 public class MapController {
 
@@ -89,11 +89,6 @@ public class MapController {
 
     @PostMapping("/updateCurrentPath")
     public ResponseEntity<?> updateCurrentPath(@RequestBody UpdateCurrentPathRequest request) {
-
-        System.out.println( request.getLon() + " "
-                 + request.getLat()
-                 + " " + request.getDestinationLon()
-                 + " " + request.getDestinationLat());
 
         return ResponseEntity
                 .ok(routeFinderService.getPath(

@@ -1,6 +1,16 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { finalize } from 'rxjs/operators';
@@ -13,14 +23,12 @@ export interface Driver {
   phone: string;
 }
 
-
 @Component({
   selector: 'app-all-drivers',
   templateUrl: './all-drivers.component.html',
   styleUrls: ['./all-drivers.component.scss'],
 })
 export class AllDriversComponent implements OnInit {
-
   show = false;
   pageLoading = true;
   error = '';
@@ -39,66 +47,61 @@ export class AllDriversComponent implements OnInit {
   constructor(
     private allDriverDetailsService: AllDriverDetailsService,
     public dialog: MatDialog,
-    private formBuilder: FormBuilder,
-    ) {}
+    private formBuilder: FormBuilder
+  ) {}
 
   ngOnInit(): void {
-
     this.getDrivers();
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
   }
 
   edit(driver: Driver) {
     let position = this.dataSource.data.indexOf(driver);
-    console.log(driver)
+
     this.openDialog(driver);
   }
 
   delete(id: number) {
-    console.log(id);
-    this.allDriverDetailsService.deleteDriver(id)
-      .subscribe(
-        (data) => {
-          this.getDrivers();
-        }
-      )
+    this.allDriverDetailsService.deleteDriver(id).subscribe((data) => {
+      this.getDrivers();
+    });
   }
-
-  name = 'kosta'
-  animal = 'kuce';
-
 
   openDialog(driver: Driver): void {
     const dialogRef = this.dialog.open(EditUserDialog, {
       width: '500px',
-      data: {id: driver.id, fullName: driver.fullName, email: driver.email, phone: driver.phone},
+      data: {
+        id: driver.id,
+        fullName: driver.fullName,
+        email: driver.email,
+        phone: driver.phone,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+    dialogRef.afterClosed().subscribe((result) => {
       this.getDrivers();
     });
   }
 
   getDrivers() {
-    this.allDriverDetailsService.getDrivers()
-    .pipe(
-      finalize(() => {
-        this.pageLoading = false;
-        this.show = true;
-      })
-    )
+    this.allDriverDetailsService
+      .getDrivers()
+      .pipe(
+        finalize(() => {
+          this.pageLoading = false;
+          this.show = true;
+          setTimeout(() => {
+            this.dataSource.paginator = this.paginator;
+          }, 100);
+        })
+      )
       .subscribe(
-      (data) => {
-        this.dataSource = new MatTableDataSource<Driver>(data);
-      },
-      (error) => {
-        this.error = 'Server unavailable';
-      } 
-    )
+        (data) => {
+          this.dataSource = new MatTableDataSource<Driver>(data);
+        },
+        (error) => {
+          this.error = 'Server unavailable';
+        }
+      );
   }
 }
 
@@ -111,7 +114,7 @@ export class EditUserDialog {
     public dialogRef: MatDialogRef<EditUserDialog>,
     @Inject(MAT_DIALOG_DATA) public data: Driver,
     private formBuilder: FormBuilder,
-    private allDriverDetailsService: AllDriverDetailsService,
+    private allDriverDetailsService: AllDriverDetailsService
   ) {}
 
   error = '';
@@ -122,15 +125,18 @@ export class EditUserDialog {
   }
 
   editUserForm = this.formBuilder.group({
-    email : this.data.email,
-    phone : this.data.phone  
-  }
-  )
+    email: this.data.email,
+    phone: this.data.phone,
+  });
 
   onSubmit() {
-    console.log(this.data.id)
     this.error = '';
-    this.allDriverDetailsService.editDriver(this.data.id, this.editUserForm.get('email')!.value, this.editUserForm.get('phone')!.value)
+    this.allDriverDetailsService
+      .editDriver(
+        this.data.id,
+        this.editUserForm.get('email')!.value,
+        this.editUserForm.get('phone')!.value
+      )
       .subscribe(
         (data) => {
           this.onNoClick();
@@ -138,6 +144,6 @@ export class EditUserDialog {
         (error) => {
           this.error = error.error.message;
         }
-      )
+      );
   }
 }

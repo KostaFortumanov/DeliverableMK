@@ -4,9 +4,9 @@
             <mat-label>Град</mat-label>
             <input type="text" matInput formControlName="city" [matAutocomplete]="autoGroup">
             <mat-autocomplete #autoGroup="matAutocomplete">
-                    <mat-option *ngFor="let name of cityOptions | async" [value]="name">
-                        {{name}}
-                    </mat-option>
+                <mat-option *ngFor="let name of cityOptions | async" [value]="name">
+                    {{name}}
+                </mat-option>
             </mat-autocomplete>
         </mat-form-field>
         <mat-form-field appearance="fill">
@@ -74,12 +74,11 @@
                 <div class="spinner-container" *ngIf="addLocationLoading">
                     <mat-spinner diameter="24"></mat-spinner>
                 </div>
-                
-            <button [disabled]="addLocationLoading" mat-raised-button color="primary">
-                Add location
-            </button>
-        </span>
-        
-    </div>
+
+                <button [disabled]="addLocationLoading" mat-raised-button color="primary">
+                    Add location
+                </button>
+            </span>
+        </div>
     </form>
 </div>

@@ -1,6 +1,6 @@
 <mat-form-field appearance="fill">
   <mat-label>Number of paths</mat-label>
-  <input matInput type="number" [(ngModel)]="show" (change)="drawMap()"/>
+  <input matInput type="number" [(ngModel)]="show" (change)="drawMap()" />
 </mat-form-field>
 <div class="button-container">
   <button *ngIf="jobs.length > 0" mat-raised-button color="primary" (click)="finishJob()">

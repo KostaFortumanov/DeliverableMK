@@ -24,10 +24,16 @@ export class AddressService {
   }
 
   getNumbers(cityName: string, streetName: string): Observable<any> {
-    return this.http.get(API + '/locations/' + cityName + "/" + streetName);
+    return this.http.get(API + '/locations/' + cityName + '/' + streetName);
   }
 
-  addLocation(city: string, street: string, number: string, lat: number, lon: number): Observable<any> {
+  addLocation(
+    city: string,
+    street: string,
+    number: string,
+    lat: number,
+    lon: number
+  ): Observable<any> {
     return this.http.post(
       API + '/locations/addLocation',
       {
@@ -35,7 +41,7 @@ export class AddressService {
         street,
         number,
         lat,
-        lon
+        lon,
       },
       httpOptions
     );

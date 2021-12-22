@@ -7,7 +7,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 @Component({
   selector: 'app-register-form',
   templateUrl: './register-form.component.html',
-  styleUrls: ['./register-form.component.scss']
+  styleUrls: ['./register-form.component.scss'],
 })
 export class RegisterFormComponent implements OnInit {
   registerForm!: FormGroup;
@@ -20,7 +20,7 @@ export class RegisterFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authcenticationService: AuthenticationService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
@@ -28,8 +28,8 @@ export class RegisterFormComponent implements OnInit {
       lastName: ['', Validators.required],
       email: ['', Validators.required],
       phoneNumber: ['', Validators.required],
-      role: ['', Validators.required]
-    })
+      role: ['', Validators.required],
+    });
   }
 
   get f() {
@@ -40,14 +40,20 @@ export class RegisterFormComponent implements OnInit {
     this.error = '';
     this.success = '';
     this.submitted = true;
-    
-    if(this.registerForm.invalid){
+
+    if (this.registerForm.invalid) {
       return;
     }
 
     this.loading = true;
     this.authcenticationService
-      .register(this.f.firstName.value, this.f.lastName.value, this.f.email.value, this.f.phoneNumber.value, this.f.role.value)
+      .register(
+        this.f.firstName.value,
+        this.f.lastName.value,
+        this.f.email.value,
+        this.f.phoneNumber.value,
+        this.f.role.value
+      )
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -55,17 +61,15 @@ export class RegisterFormComponent implements OnInit {
       )
       .subscribe(
         (data) => {
-          console.log(data)
           this.success = data.message;
         },
         (error) => {
-          console.log(error)
           this.error = error.error.message;
         }
       );
   }
 
   back() {
-    this.router.navigate(['/'])
+    this.router.navigate(['/']);
   }
 }

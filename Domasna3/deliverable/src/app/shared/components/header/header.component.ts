@@ -29,37 +29,42 @@ export class HeaderComponent implements OnInit {
   constructor(
     private tokenStorageService: TokenStorageService,
     private notificationService: NotificationService,
-    private router: Router,
+    private router: Router
   ) {
-
     let user = tokenStorageService.getUser();
     if (user) {
       this.role = user.role;
     }
 
-    if(this.role == 'MANAGER') {
+    if (this.role == 'MANAGER') {
       this.connect();
     }
   }
 
   connect() {
-    console.log("Initialize WebSocket Connection");
     let ws = new SockJS(webSocketEndPoint);
     this.stompClient = Stomp.over(ws);
-    
-    this.stompClient.connect({},  () => {
-        this.stompClient.subscribe("/user/managerJob/queue/messages",  (message: any) => {
-          console.log(message)
-          message = JSON.parse(message.body)
-          this.notifications.push(message)
-        });
-        //_this.stompClient.reconnect_delay = 2000;
-    }, this.errorCallBack);
+    this.stompClient.debug = () => {}
+
+    this.stompClient.connect(
+      {},
+      () => {
+        this.stompClient.subscribe(
+          '/user/managerJob/queue/messages',
+          (message: any) => {
+            message = JSON.parse(message.body);
+            this.notifications.push(message);
+          }
+        );
+
+      },
+      this.errorCallBack
+    );
   }
 
   dismissAll() {
     this.notificationService.dismissAll();
-    this.notifications = []
+    this.notifications = [];
   }
 
   getNotifications() {
@@ -71,25 +76,19 @@ export class HeaderComponent implements OnInit {
   }
 
   errorCallBack(error: string) {
-    console.log('error')
-    console.log("errorCallBack -> " + error)
     setTimeout(() => {
-        this.connect();
+      this.connect();
     }, 5000);
   }
 
   ngOnInit(): void {
-    this.notificationService.getNotifications()
-      .subscribe(
-        (data) => {
-          this.notifications = data;
-          this.numNotifications = this.notifications.length;
-        },
-        (error) => {
-
-        }
-      );
-
+    this.notificationService.getNotifications().subscribe(
+      (data) => {
+        this.notifications = data;
+        this.numNotifications = this.notifications.length;
+      },
+      (error) => {}
+    );
   }
 
   toggleSideBar() {

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "${frontUrl}", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/jobs")
 public class JobController {
 
@@ -159,7 +159,6 @@ public class JobController {
                     .badRequest()
                     .body(new MessageResponse("All jobs have been assigned"));
         } catch (JSONException e) {
-            System.out.println(e.toString());
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("All selected drivers already have assigned jobs"));
@@ -174,7 +173,6 @@ public class JobController {
     public ResponseEntity<?> getPreview(@RequestBody List<Long> driverIds) {
         try {
             String vroomResponse = optimizationService.getVroomResponse(driverIds);
-            System.out.println(vroomResponse);
             OptimizationPreviewResponse response = new OptimizationPreviewResponse();
 
             JSONObject json = new JSONObject(vroomResponse);
@@ -226,7 +224,6 @@ public class JobController {
                     .badRequest()
                     .body(new MessageResponse("All jobs have been assigned"));
         } catch (JSONException e) {
-            System.out.println(e.toString());
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("All selected drivers already have assigned jobs"));

@@ -9,8 +9,9 @@
         <div fxFlex fxLayout="row" fxLayoutAlign="flex-end">
             <ul fxLayout="row" fxLayoutGap="20px">
                 <li *ngIf="role=='MANAGER'">
-                    <button  mat-icon-button [matMenuTriggerFor]="menu1">
-                        <mat-icon [matBadge]="getNumNotifications()" matBadgeColor="accent" [matBadgeHidden]="getNumNotifications() == 0">mail_outline</mat-icon>
+                    <button mat-icon-button [matMenuTriggerFor]="menu1">
+                        <mat-icon [matBadge]="getNumNotifications()" matBadgeColor="accent"
+                            [matBadgeHidden]="getNumNotifications() == 0">mail_outline</mat-icon>
                     </button>
                     <mat-menu #menu1="matMenu">
                         <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="notifications">
