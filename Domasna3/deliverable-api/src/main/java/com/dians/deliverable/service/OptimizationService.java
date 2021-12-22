@@ -44,8 +44,8 @@ public class OptimizationService {
 
         VroomRequest request = buildRequest(driverIds);
 
-        HttpClient client = HttpClientBuilder.create().build();
         try {
+            HttpClient client = HttpClientBuilder.create().build();
             HttpPost post = new HttpPost(vroomUrl);
             StringEntity postingString = new StringEntity(new JSONObject(request).toString());
             post.setEntity(postingString);
@@ -62,6 +62,7 @@ public class OptimizationService {
                 }
             }
 
+            post.releaseConnection();
             return textBuilder.toString();
 
         } catch (Exception e) {

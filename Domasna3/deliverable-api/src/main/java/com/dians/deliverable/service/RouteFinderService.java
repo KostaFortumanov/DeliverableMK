@@ -13,9 +13,12 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class RouteFinderService {
@@ -46,7 +49,8 @@ public class RouteFinderService {
 
     public GetPathResponse getPath(double lon1, double lat1, double lon2, double lat2, Job job) {
 
-        HttpClient client = HttpClient.newHttpClient();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HttpClient client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).connectTimeout(Duration.ofSeconds(5)).executor(executor).build();
         HttpRequest r = HttpRequest.newBuilder()
                 .uri(URI.create(orsUrl + "/ors/v2/directions/driving-car?start=" + lon1 + "," + lat1 + "&end=" + lon2 + "," + lat2))
                 .build();
@@ -56,6 +60,10 @@ public class RouteFinderService {
             response = client.send(r, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            executor.shutdownNow();
+            client = null;
+            System.gc();
         }
 
         JSONObject json = new JSONObject(response.body().toString());

@@ -5,7 +5,7 @@ const cors = require('cors');
 const app = express();
 
 // add this code
-const whitelist = ['https://tesedelivery-api.herokuapp.com/']; // list of allow domain
+const whitelist = ['https://deliverable-api.herokuapp.com/']; // list of allow domain
 
 const corsOptions = {
    origin: function(origin, callback) {
