@@ -264,7 +264,7 @@ public class JobController {
 
         List<JobResponse> response = new ArrayList<>();
 
-        jobs.forEach(job -> response.add(new JobResponse(job.getId(), job.getAddress(), job.getDescription(), user.getFirstName() + " " + user.getLastName())));
+        jobs.stream().filter(job -> job.getStatus().equals(JobStatus.COMPLETED)).forEach(job -> response.add(new JobResponse(job.getId(), job.getAddress(), job.getDescription(), user.getFirstName() + " " + user.getLastName())));
 
         return ResponseEntity
                 .ok(response);
