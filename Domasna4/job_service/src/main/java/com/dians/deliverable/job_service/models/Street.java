@@ -31,4 +31,9 @@ public class Street {
         this.name = name;
         addresses = new ArrayList<>();
     }
+
+    public Street(String name, List<Address> addresses) {
+        this.name = name;
+        this.addresses = addresses;
+    }
 }
