@@ -44,6 +44,7 @@ public class AppUser implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
     private Boolean enabled;
+    private Integer totalJobs = 0;
 
     public AppUser() {
     }

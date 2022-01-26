@@ -25,38 +25,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final AuthEntryPointJwt unauthorizedHandler;
 
-    private final static String[] publicMatchers = {
-            "/auth/login",
-            "/auth/newAccount",
-            "/auth/register",
-            "/ws/**"
-    };
-
-    private final static String[] managerMatchers = {
-            "/api/drivers/allDriverInfo",
-            "/api/drivers/delete/**",
-            "/api/drivers/edit",
-            "/api/drivers/selectDrivers",
-            "/api/jobs/unassignedJobs",
-            "/api/jobs/assignedJobs",
-            "/api/jobs/completedJobs",
-            "/api/jobs/addJob",
-            "/api/jobs/assignJobs",
-            "/api/jobs/preview",
-            "/api/jobs/delete/**",
-            "/api/locations/**",
-            "/api/notifications/**"
-    };
-
-    private final static String[] driverMatchers = {
-            "/api/map/allPaths",
-            "/api/map/finishJob",
-            "/api/map/currentJobs",
-            "/api/jobs/myAssigned",
-            "/api/jobs/myCompleted"
-    };
-
-
     public SecurityConfig(UserService userService, AuthEntryPointJwt unauthorizedHandler) {
         this.userService = userService;
         this.unauthorizedHandler = unauthorizedHandler;
@@ -64,13 +32,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
+        http.csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers(publicMatchers).permitAll()
-                .antMatchers(managerMatchers).hasAuthority(UserRole.MANAGER.name())
-                .antMatchers(driverMatchers).hasAuthority(UserRole.DRIVER.name())
-                .anyRequest().authenticated();
+                .authorizeRequests().anyRequest().permitAll();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

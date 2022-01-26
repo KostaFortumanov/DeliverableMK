@@ -20,6 +20,10 @@ public class JobService {
         repository.save(job);
     }
 
+    public void saveAll(List<Job> jobs) {
+        repository.saveAll(jobs);
+    }
+
     public boolean exists(String address, String description) {
         return repository.existsByAddressAndDescriptionAndStatus(address, description, JobStatus.NOT_ASSIGNED);
     }
@@ -29,7 +33,11 @@ public class JobService {
     }
 
     public Job getById(Long jobId) {
-        return repository.getById(jobId);
+        return repository.findById(jobId).orElse(null);
+    }
+
+    public List<Job> getByDriver(Long userId) {
+        return repository.findAllByAssignedTo(userId);
     }
 
     public List<Job> getByDriverAndStatus(Long userId, JobStatus status) {

@@ -17,7 +17,6 @@ import java.util.Comparator;
 import java.util.List;
 
 @RestController
-//@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/user")
 public class DriverController {
 
@@ -93,31 +92,5 @@ public class DriverController {
 
         return ResponseEntity
                 .ok(response.stream().sorted(Comparator.comparing(SelectDriverResponse::isAvailable).reversed()));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getDriver(@PathVariable Long id) {
-        AppUser user = userService.getById(id);
-        return ResponseEntity
-                .ok(user);
-    }
-
-    @GetMapping("/{id}/name")
-    public ResponseEntity<String> getDriverFullName(@PathVariable Long id) {
-        AppUser user = userService.getById(id);
-        return ResponseEntity
-                .ok(user.getFirstName() + " " + user.getLastName());
-    }
-
-    @PostMapping("/saveStatistics")
-    public void saveStatistics(@RequestBody Statistics statistics) {
-        statisticsService.save(statistics);
-    }
-
-    @PostMapping("/setTotalJobs/{userId}")
-    public void setTotalJobs(@PathVariable Long userId, @RequestBody Integer jobs) {
-        AppUser user = userService.getById(userId);
-        user.setTotalJobs(jobs);
-        userService.save(user);
     }
 }

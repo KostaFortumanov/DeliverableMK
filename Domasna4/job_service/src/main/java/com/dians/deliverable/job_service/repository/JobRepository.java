@@ -11,5 +11,6 @@ import java.util.List;
 public interface JobRepository extends JpaRepository<Job, Long> {
     boolean existsByAddressAndDescriptionAndStatus(String address, String description, JobStatus jobStatus);
     List<Job> findAllByStatus(JobStatus status);
+    List<Job> findAllByAssignedTo(Long userId);
     List<Job> findAllByAssignedToAndStatus(Long userId, JobStatus status);
 }

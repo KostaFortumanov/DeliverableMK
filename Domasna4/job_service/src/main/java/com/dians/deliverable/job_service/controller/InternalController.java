@@ -2,6 +2,7 @@ package com.dians.deliverable.job_service.controller;
 
 import com.dians.deliverable.job_service.models.Job;
 import com.dians.deliverable.job_service.models.JobStatus;
+import com.dians.deliverable.job_service.service.InternalService;
 import com.dians.deliverable.job_service.service.JobService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,11 @@ import java.util.List;
 public class InternalController {
 
     private final JobService jobService;
+    private final InternalService internalService;
 
-    public InternalController(JobService jobService) {
+    public InternalController(JobService jobService, InternalService internalService) {
         this.jobService = jobService;
+        this.internalService = internalService;
     }
 
     @GetMapping("/removeJobAssignment/{userId}")
@@ -49,6 +52,9 @@ public class InternalController {
         Job job = jobService.getById(id);
         job.setStatus(JobStatus.COMPLETED);
         jobService.save(job);
+        if(jobService.getByDriverAndStatus(job.getAssignedTo(), JobStatus.ASSIGNED).size() == 0) {
+            internalService.setTotalJobs(job.getAssignedTo(), 0);
+        }
     }
 
     @GetMapping("/{id}")
