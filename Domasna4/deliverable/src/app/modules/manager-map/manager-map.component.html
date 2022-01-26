@@ -1,0 +1,13 @@
+<mat-form-field appearance="fill">
+  <mat-label>Drivers</mat-label>
+  <mat-select multiple [(ngModel)]="selected" (ngModelChange)="drawMap()">
+    <mat-option *ngFor="let driver of getDrivers()" [value]="driver.id">{{driver.name}} Last update:<span
+        *ngIf="driver.seconds"> {{driver.seconds}}s ago</span><span *ngIf="!driver.seconds"> now</span></mat-option>
+  </mat-select>
+</mat-form-field>
+<div class="map-container">
+  <div class="map-frame">
+    <div id="managerMap">
+    </div>
+  </div>
+</div>

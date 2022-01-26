@@ -1,0 +1,17 @@
+:host {
+  background-image: url("/../assets/background.PNG");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+  :host {
+    background-image: url("/../assets/mobileBackground.PNG");
+  }
+}

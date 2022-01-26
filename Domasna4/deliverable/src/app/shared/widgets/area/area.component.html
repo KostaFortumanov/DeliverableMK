@@ -1,0 +1,10 @@
+<mat-form-field appearance="fill">
+  <mat-label>Month</mat-label>
+  <mat-select [(value)]="selected" (selectionChange)="handleUpdate()">
+    <mat-option *ngFor="let month of months" [value]="month.value">
+      {{month.name}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<highcharts-chart [Highcharts]="Highcharts" [options]="chartOptions" [(update)]="updateFlag" class="chart">
+</highcharts-chart>

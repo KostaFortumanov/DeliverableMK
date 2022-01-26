@@ -1,0 +1,15 @@
+jwtSecret: "deliverableSecret"
+
+eureka:
+    client:
+        fetch-registry: true
+        register-with-eureka: true
+        service-url:
+            defaultZone: http://localhost:8761/eureka/
+    instance:
+        hostname: localhost
+server:
+    port: 9191
+spring:
+    application:
+        name: API-GATEWAY
