@@ -1,6 +1,5 @@
 package com.dians.deliverable.navigation_service.service;
 
-import com.dians.deliverable.navigation_service.exceptions.NoJobsException;
 import com.dians.deliverable.navigation_service.models.AppUser;
 import com.dians.deliverable.navigation_service.models.Config;
 import com.dians.deliverable.navigation_service.models.Job;
@@ -18,7 +17,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.PortUnreachableException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;

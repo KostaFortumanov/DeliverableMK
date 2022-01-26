@@ -16,8 +16,4 @@ public class StreetService {
     public void save(Street newStreet) {
         repository.save(newStreet);
     }
-
-    public Street findById(Long id) {
-        return repository.findById(id).orElse(null);
-    }
 }

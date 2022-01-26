@@ -7,7 +7,6 @@ import com.dians.deliverable.job_service.payload.request.AddLocationRequest;
 import com.dians.deliverable.job_service.payload.response.MessageResponse;
 import com.dians.deliverable.job_service.service.AddressService;
 import com.dians.deliverable.job_service.service.CityService;
-import com.dians.deliverable.job_service.service.JobService;
 import com.dians.deliverable.job_service.service.StreetService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +22,11 @@ public class LocationController {
     private final CityService cityService;
     private final StreetService streetService;
     private final AddressService addressService;
-    private final JobService jobService;
 
-    public LocationController(CityService cityService, StreetService streetService, AddressService addressService, JobService jobService) {
+    public LocationController(CityService cityService, StreetService streetService, AddressService addressService) {
         this.cityService = cityService;
         this.streetService = streetService;
         this.addressService = addressService;
-        this.jobService = jobService;
     }
 
     @GetMapping

@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter implements GatewayFilter {
             "/api/jobs/delete/**",
             "/api/locations/**",
             "/api/notifications/**",
-	    "/api/config/**"
+	        "/api/config/**"
     );
 
     private final static List<String> driverMatchers = List.of(

@@ -1,0 +1,74 @@
+version: '3'
+services:
+
+  eureka-server:
+    container_name: eureka-server
+    build: ./eureka_server
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    container_name: api-gateway
+    build: ./api_gateway
+    ports:
+      - "9191:9191"
+    depends_on:
+      - eureka-server
+
+  db:
+    image: 'postgres:13.1-alpine'
+    container_name: db
+    environment:
+      - POSTGRES_DB=deliverable
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  user-service:
+    container_name: user-service
+    build: ./user_service
+    ports:
+      - "9091:9091"
+    depends_on:
+      - eureka-server
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/deliverable
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - JOB_SERVICE_URL=http://job-service:9092
+
+  job-service:
+    container_name: job-service
+    build: ./job_service
+    ports:
+      - "9092:9092"
+    depends_on:
+      - eureka-server
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/deliverable
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - USER_SERVICE_URL=http://user-service:9091
+      - NAVIGATION_SERVICE_URL=http://navigation-service:9093
+
+  navigation-service:
+    container_name: navigation-service
+    build: ./navigation_service
+    ports:
+      - "9093:9093"
+    depends_on:
+      - eureka-server
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/deliverable
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - USER_SERVICE_URL=http://user-service:9091
+      - JOB_SERVICE_URL=http://job-service:9092
+
+  deliverable-ui:
+    container_name: deliverable-ui
+    build: ./deliverable
+    ports:
+      - "4200:80"

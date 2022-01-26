@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://deliverable-api.herokuapp.com/api',
-  wsEndPoint: 'https://deliverable-api.herokuapp.com/ws'
+  apiUrl: 'http://localhost:9191/api',
+  wsEndPoint: 'http://localhost:9091/ws'
 };

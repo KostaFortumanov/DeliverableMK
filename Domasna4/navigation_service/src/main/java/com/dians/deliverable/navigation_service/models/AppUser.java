@@ -2,12 +2,12 @@ package com.dians.deliverable.navigation_service.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class AppUser {
 
@@ -20,7 +20,4 @@ public class AppUser {
     private UserRole userRole;
     private Boolean enabled;
     private Integer totalJobs;
-
-    public AppUser() {
-    }
 }

@@ -2,12 +2,14 @@ package com.dians.deliverable.auth_service.security;
 import com.dians.deliverable.auth_service.models.AppUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 
 @Entity
@@ -26,9 +28,6 @@ public class NewAccountToken {
             name = "app_user_id"
     )
     private AppUser user;
-
-    public NewAccountToken() {
-    }
 
     public NewAccountToken(String token, AppUser user) {
         this.token = token;

@@ -2,12 +2,14 @@ package com.dians.deliverable.job_service.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 
 @Entity
@@ -42,9 +44,6 @@ public class Job {
     private JobStatus status;
     private Long assignedTo;
     private Double distance = 0.0;
-
-    public Job() {
-    }
 
     public Job(String address, String description, double lat, double lon, JobStatus status) {
         this.address = address;

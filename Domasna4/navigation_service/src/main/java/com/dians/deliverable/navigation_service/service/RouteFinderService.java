@@ -54,7 +54,7 @@ public class RouteFinderService {
                 .uri(URI.create(orsUrl + "/ors/v2/directions/driving-car?start=" + lon1 + "," + lat1 + "&end=" + lon2 + "," + lat2))
                 .build();
 
-        HttpResponse response = null;
+        HttpResponse<String> response = null;
         try {
             response = client.send(r, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
@@ -65,7 +65,7 @@ public class RouteFinderService {
             System.gc();
         }
 
-        JSONObject json = new JSONObject(response.body().toString());
+        JSONObject json = new JSONObject(response.body());
         JSONArray features = json.getJSONArray("features");
         JSONObject geometry = features.getJSONObject(0).getJSONObject("geometry");
         JSONArray coordinates = geometry.getJSONArray("coordinates");

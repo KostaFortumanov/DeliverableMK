@@ -20,4 +20,8 @@ public class ConfigService {
     public void saveConfig(Config config) {
         repository.save(config);
     }
+
+    public boolean configExists() {
+        return repository.existsById(1L);
+    }
 }

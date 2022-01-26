@@ -40,6 +40,7 @@ public class JwtUtils {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }

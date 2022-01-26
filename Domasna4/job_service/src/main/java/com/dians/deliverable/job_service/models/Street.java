@@ -2,6 +2,7 @@ package com.dians.deliverable.job_service.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 
 @Entity
@@ -24,9 +26,6 @@ public class Street {
 
     @OneToMany
     private List<Address> addresses;
-
-    public Street() {
-    }
 
     public Street(String name) {
         this.name = name;

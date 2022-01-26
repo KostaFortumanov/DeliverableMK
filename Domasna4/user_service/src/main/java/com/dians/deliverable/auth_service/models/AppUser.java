@@ -2,6 +2,7 @@ package com.dians.deliverable.auth_service.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,6 +14,7 @@ import java.util.Collections;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 
 @Entity
@@ -45,9 +47,6 @@ public class AppUser implements UserDetails {
     private UserRole userRole;
     private Boolean enabled;
     private Integer totalJobs = 0;
-
-    public AppUser() {
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

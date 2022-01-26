@@ -1,6 +1,5 @@
 package com.dians.deliverable.auth_service.security;
 
-import com.dians.deliverable.auth_service.models.UserRole;
 import com.dians.deliverable.auth_service.security.jwt.AuthEntryPointJwt;
 import com.dians.deliverable.auth_service.security.jwt.AuthTokenFilter;
 import com.dians.deliverable.auth_service.service.UserService;

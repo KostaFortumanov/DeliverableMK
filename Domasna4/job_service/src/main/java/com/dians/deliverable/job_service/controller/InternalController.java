@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// methods only used for communication between microservices
 @RestController
 @RequestMapping("/api/jobs")
 public class InternalController {

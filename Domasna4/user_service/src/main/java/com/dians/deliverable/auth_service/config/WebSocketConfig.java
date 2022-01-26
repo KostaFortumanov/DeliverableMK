@@ -1,7 +1,6 @@
 package com.dians.deliverable.auth_service.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.DefaultContentTypeResolver;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -17,9 +16,6 @@ import java.util.List;
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-
-    @Value("${frontUrl}")
-    private String frontUrl;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {

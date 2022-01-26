@@ -1,6 +1,5 @@
 package com.dians.deliverable.job_service.controller;
 
-import com.dians.deliverable.job_service.exceptions.NoJobsException;
 import com.dians.deliverable.job_service.models.*;
 import com.dians.deliverable.job_service.payload.request.AddJobRequest;
 import com.dians.deliverable.job_service.payload.response.JobResponse;
@@ -16,7 +15,6 @@ import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.PortUnreachableException;
 import java.util.ArrayList;
 import java.util.List;
 

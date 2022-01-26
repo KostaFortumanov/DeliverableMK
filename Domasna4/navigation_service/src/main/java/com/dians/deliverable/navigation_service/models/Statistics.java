@@ -2,13 +2,14 @@ package com.dians.deliverable.navigation_service.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class Statistics {
 
@@ -18,9 +19,6 @@ public class Statistics {
     private double distance;
     private LocalDate date;
     private Long appUser;
-
-    public Statistics() {
-    }
 
     public Statistics(double fuel, double distance, LocalDate date, Long appUser) {
         this.fuel = fuel;

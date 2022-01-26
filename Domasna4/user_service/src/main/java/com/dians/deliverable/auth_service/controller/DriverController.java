@@ -6,11 +6,11 @@ import com.dians.deliverable.auth_service.payload.request.EditDriverRequest;
 import com.dians.deliverable.auth_service.payload.response.DriverInfoResponse;
 import com.dians.deliverable.auth_service.payload.response.MessageResponse;
 import com.dians.deliverable.auth_service.payload.response.SelectDriverResponse;
+import com.dians.deliverable.auth_service.service.InternalService;
 import com.dians.deliverable.auth_service.service.StatisticsService;
 import com.dians.deliverable.auth_service.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -22,10 +22,12 @@ public class DriverController {
 
     private final UserService userService;
     private final StatisticsService statisticsService;
+    private final InternalService internalService;
 
-    public DriverController(UserService userService, StatisticsService statisticsService) {
+    public DriverController(UserService userService, StatisticsService statisticsService, InternalService internalService) {
         this.userService = userService;
         this.statisticsService = statisticsService;
+        this.internalService = internalService;
     }
 
     @GetMapping("/allDriverInfo")
@@ -48,8 +50,8 @@ public class DriverController {
     public ResponseEntity<?> deleteDriver(@PathVariable Long id) {
 
         AppUser user = userService.getById(id);
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getForEntity("http://localhost:9092/api/jobs/removeJobAssignment/" + id, Void.class);
+
+        internalService.removeJobAssignment(id);
 
         List<Statistics> statistics = statisticsService.findAllByDriver(id);
         statistics.forEach(statistic -> statistic.setAppUser(null));

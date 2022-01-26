@@ -7,6 +7,7 @@ import com.dians.deliverable.auth_service.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+// methods only used for communication between microservices
 @RestController
 @RequestMapping("/api/user")
 public class InternalController {

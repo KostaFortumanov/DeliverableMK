@@ -1,0 +1,4 @@
+com\dians\deliverable\api_gateway\ApiGatewayApplication.class
+com\dians\deliverable\api_gateway\util\JwtUtil.class
+com\dians\deliverable\api_gateway\config\GatewayConfig.class
+com\dians\deliverable\api_gateway\filter\JwtAuthenticationFilter.class
