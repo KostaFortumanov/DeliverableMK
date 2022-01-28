@@ -1,30 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
-import { environment } from 'src/environments/environment';
-import * as Stomp from 'stompjs';
-import * as SockJS from 'sockjs-client';
 import { DriverMapService } from 'src/app/services/driver-map.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
-
-export interface Driver {
-  id: number;
-  name: string;
-  currentLon: number;
-  currentLat: number;
-  destinationLon: number;
-  destinationLat: number;
-  job: Job;
-  lastUpdate: number;
-  seconds: number;
-}
-
-export interface Job {
-  id: number;
-  address: string;
-  description: string;
-}
-
-const webSocketEndPoint = environment.wsEndPoint;
+import { ManagerMapDriver } from 'src/app/models/manager-map-driver';
+import { WebSocketService } from 'src/app/services/web-socket.service';
 
 @Component({
   selector: 'app-manager-map',
@@ -36,7 +15,8 @@ export class ManagerMapComponent implements OnInit, OnDestroy {
 
   constructor(
     private driverMapService: DriverMapService,
-    private tokenStorageService: TokenStorageService
+    private tokenStorageService: TokenStorageService,
+    private webSocketService: WebSocketService
   ) {
     if (tokenStorageService.getUser().role === 'MANAGER') {
       this.connect();
@@ -76,13 +56,12 @@ export class ManagerMapComponent implements OnInit, OnDestroy {
   }
 
   selected: number[] = [];
-  drivers: Driver[] = [];
+  drivers: ManagerMapDriver[] = [];
   polylines: L.Polyline[] = [];
   markersStart: L.Marker[] = [];
   markersEnd: L.Marker[] = [];
 
   managerMap!: L.Map;
-  stompClient2!: any;
 
   private tiles = L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -100,12 +79,8 @@ export class ManagerMapComponent implements OnInit, OnDestroy {
   }
 
   connect() {
-    let ws = new SockJS(webSocketEndPoint);
-    this.stompClient2 = Stomp.over(ws);
-    this.stompClient2.debug = () => {}
-
-    this.stompClient2.connect({}, () => {
-      this.stompClient2.subscribe(
+    this.webSocketService.getStompClient().then((stopmclient) => {
+      stopmclient.subscribe(
         '/user/managerMap/queue/messages',
         (message: any) => {
           message = JSON.parse(message.body);
@@ -224,7 +199,8 @@ export class ManagerMapComponent implements OnInit, OnDestroy {
 
             this.markersEnd.push(marker);
           }
-        }
+        },
+        { id: 'managerMapTopic' }
       );
     });
   }
@@ -239,6 +215,8 @@ export class ManagerMapComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     clearInterval(this.interval);
-    this.stompClient2.disconnect();
+    this.webSocketService.getStompClient().then((stopmclient) => {
+      stopmclient.unsubscribe('managerMapTopic');
+    });
   }
 }

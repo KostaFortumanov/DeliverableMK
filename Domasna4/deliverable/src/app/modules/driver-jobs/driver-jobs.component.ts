@@ -1,13 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
+import { Job } from 'src/app/models/job';
 import { JobService } from 'src/app/services/job.service';
-
-export interface Job {
-  id: number;
-  address: string;
-  description: string;
-  driver: string;
-}
 
 @Component({
   selector: 'app-driver-jobs',

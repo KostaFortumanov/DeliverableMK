@@ -14,14 +14,8 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { finalize } from 'rxjs/operators';
+import { Driver } from 'src/app/models/driver';
 import { AllDriverDetailsService } from 'src/app/services/all-driver-details.service';
-
-export interface Driver {
-  id: number;
-  fullName: string;
-  email: string;
-  phone: string;
-}
 
 @Component({
   selector: 'app-all-drivers',

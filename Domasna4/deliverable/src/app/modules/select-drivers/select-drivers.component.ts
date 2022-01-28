@@ -7,30 +7,9 @@ import {
 import { SelectDriverService } from 'src/app/services/select-driver.service';
 import { finalize } from 'rxjs/operators';
 import { JobService } from 'src/app/services/job.service';
-
-export interface SelectDriver {
-  id: number;
-  fullName: string;
-  available: boolean;
-}
-
-export interface Preview {
-  assignedJobs: string;
-  driversUsed: string;
-  fuelCost: string;
-  time: string;
-}
-
-export interface Driver {
-  firstName: string;
-  lastName: string;
-  jobs: Job[];
-}
-export interface Job {
-  id: number;
-  address: string;
-  description: string;
-}
+import { Preview } from 'src/app/models/preview';
+import { PreviewDriver } from 'src/app/models/preview-driver';
+import { Driver } from 'src/app/models/driver';
 
 @Component({
   selector: 'app-select-drivers',
@@ -55,25 +34,18 @@ export class SelectDriversComponent implements OnInit {
     this.getDrivers();
   }
 
-  drivers: SelectDriver[] = [];
+  drivers: Driver[] = [];
 
-  selected: SelectDriver[] = [];
+  selected: Driver[] = [];
 
-  detailDrivers: Driver[] = [];
+  detailDrivers: PreviewDriver[] = [];
 
-  fuelPreview: Preview = {
-    assignedJobs: '',
-    driversUsed: '',
-    fuelCost: '',
-    time: '',
-  };
   timePreview: Preview = {
     assignedJobs: '',
     driversUsed: '',
     fuelCost: '',
     time: '',
   };
-  fuelPreviewLoading = false;
   timePreviewLoading = false;
   noSelection = true;
 
@@ -154,7 +126,7 @@ export class SelectDriversComponent implements OnInit {
     }
   }
 
-  drop(event: CdkDragDrop<SelectDriver[]>) {
+  drop(event: CdkDragDrop<Driver[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,

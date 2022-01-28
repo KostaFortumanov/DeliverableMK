@@ -4,19 +4,9 @@ import 'leaflet-fullscreen';
 import 'leaflet-easybutton';
 import { DriverMapService } from 'src/app/services/driver-map.service';
 import { finalize } from 'rxjs/operators';
-import * as Stomp from 'stompjs';
-import * as SockJS from 'sockjs-client';
-import { environment } from 'src/environments/environment';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
-
-const webSocketEndPoint = environment.wsEndPoint;
-
-export interface Job {
-  id: number;
-  address: string;
-  description: string;
-  order: number;
-}
+import { Job } from 'src/app/models/job';
+import { WebSocketService } from 'src/app/services/web-socket.service';
 
 const options = {
   enableHighAccuracy: true,
@@ -48,9 +38,6 @@ export class DriverMapComponent implements OnInit, OnDestroy {
   info!: L.Control;
   distance: string = '0';
   duration: number = 0;
-
-  topic: string = '/user/' + 12 + '/queue/messages';
-  stompClient: any;
 
   private initMap(): void {
     this.map = L.map('driverMap', {
@@ -126,17 +113,11 @@ export class DriverMapComponent implements OnInit, OnDestroy {
     }
   );
 
-  stompClient1!: any;
-
   constructor(
     private driverMapService: DriverMapService,
-    private tokenStorageService: TokenStorageService
-  ) {
-    let ws = new SockJS(webSocketEndPoint);
-    this.stompClient1 = Stomp.over(ws);
-    this.stompClient1.debug = () => {};
-    this.stompClient1.connect({});
-  }
+    private tokenStorageService: TokenStorageService,
+    private webSocketService: WebSocketService
+  ) {}
 
   ngOnInit(): void {
     this.initMap();
@@ -245,19 +226,21 @@ export class DriverMapComponent implements OnInit, OnDestroy {
 
           let user = this.tokenStorageService.getUser();
 
-          this.stompClient1.send(
-            '/app/manager/map',
-            {},
-            JSON.stringify({
-              id: user.id,
-              name: user.firstName + ' ' + user.lastName,
-              currentLon: lon,
-              currentLat: lat,
-              destinationLon: destination[0],
-              destinationLat: destination[1],
-              job: this.jobs[0],
-            })
-          );
+          this.webSocketService.getStompClient().then((stompclient) => {
+            stompclient.send(
+              '/app/manager/map',
+              {},
+              JSON.stringify({
+                id: user.id,
+                name: user.firstName + ' ' + user.lastName,
+                currentLon: lon,
+                currentLat: lat,
+                destinationLon: destination[0],
+                destinationLat: destination[1],
+                job: this.jobs[0],
+              })
+            );
+          });
         });
     }
   }
@@ -271,12 +254,9 @@ export class DriverMapComponent implements OnInit, OnDestroy {
         user.lastName +
         ' finished job ' +
         this.jobs[0].id;
-      this.stompClient1.send(
-        '/app/manager/finishJob',
-        {},
-        JSON.stringify(message)
-      );
-
+      this.webSocketService.getStompClient().then((stompclient) => {
+        stompclient.send('/app/manager/finishJob', {}, JSON.stringify(message));
+      });
       this.jobs.shift();
       this.polylines[0].removeFrom(this.map);
       this.polylines.shift();
@@ -368,6 +348,5 @@ export class DriverMapComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     navigator.geolocation.clearWatch(this.navigation);
-    this.stompClient1.disconnect();
   }
 }

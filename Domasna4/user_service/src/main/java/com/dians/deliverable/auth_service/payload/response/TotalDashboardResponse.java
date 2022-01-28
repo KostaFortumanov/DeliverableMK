@@ -11,5 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TotalDashboardResponse extends DayResponse {
 
-    String name;
+    String fullName;
 }
