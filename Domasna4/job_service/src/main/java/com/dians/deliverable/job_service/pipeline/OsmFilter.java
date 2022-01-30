@@ -16,7 +16,7 @@ public class OsmFilter implements Filter<String, String> {
     @Override
     public String process(String input) {
 
-        int osm = getOsm(input);
+        int osm = 6966465;
         JSONObject output = new JSONObject();
         output.put("name", input);
         output.put("osm_id", osm);
@@ -38,6 +38,7 @@ public class OsmFilter implements Filter<String, String> {
         }
 
         String body = response.body().toString();
+        System.out.println(body);
         JSONArray arr = new JSONArray(body);
         for (int i = 0; i < arr.length(); i++) {
             JSONObject object = arr.getJSONObject(i);

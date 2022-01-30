@@ -82,7 +82,7 @@ public class AddressFilter implements Filter<String, String>{
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest r = HttpRequest.newBuilder()
-                .uri(URI.create("https://overpass-api.de/api/interpreter?data=" + URLEncoder.encode(String.format(query, 3600000000L + osm ), StandardCharsets.UTF_8)))
+                .uri(URI.create("https://overpass-api.de/api/interpreter?data=" + URLEncoder.encode(String.format(query, 3600000000L + osm), StandardCharsets.UTF_8)))
                 .build();
 
         HttpResponse response = null;

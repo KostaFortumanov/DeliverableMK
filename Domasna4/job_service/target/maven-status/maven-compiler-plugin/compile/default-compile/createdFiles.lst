@@ -17,6 +17,7 @@ com\dians\deliverable\job_service\pipeline\Pipeline.class
 com\dians\deliverable\job_service\payload\response\MessageResponse.class
 com\dians\deliverable\job_service\payload\response\OptimizationDriverResponse.class
 com\dians\deliverable\job_service\service\StreetService.class
+com\dians\deliverable\job_service\exceptions\NoJobsException.class
 com\dians\deliverable\job_service\models\City.class
 com\dians\deliverable\job_service\repository\StreetRepository.class
 com\dians\deliverable\job_service\pipeline\OsmFilter.class
